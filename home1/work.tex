@@ -1,0 +1,246 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Short Sectioned Assignment
+% LaTeX Template
+% Version 1.0 (5/5/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Frits Wenneker (http://www.howtotex.com)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[paper=a4, fontsize=11pt]{scrartcl} % A4 paper and 11pt font size
+
+\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+\usepackage{fourier} % Use the Adobe Utopia font for the document - comment this line to return to the LaTeX default
+\usepackage[english]{babel} % English language/hyphenation
+\usepackage{amsmath,amsfonts,amsthm} % Math packages
+\usepackage{indentfirst}
+\usepackage[top=0.8in, bottom=1in, left=0.75in, right=0.75in]{geometry}
+\usepackage{listings}
+\usepackage{courier} % Required for the courier font
+
+\usepackage{lipsum} % Used for inserting dummy 'Lorem ipsum' text into the template
+
+\usepackage{sectsty} % Allows customizing section commands
+\allsectionsfont{\centering \normalfont\scshape} % Make all sections centered, the default font and small caps
+
+\usepackage{fancyhdr} % Custom headers and footers
+\pagestyle{fancy} % Makes all pages in the document conform to the custom headers and footers
+\fancyhead{} % No page header - if you want one, create it in the same way as the footers below
+\fancyfoot[L]{} % Empty left footer
+\fancyfoot[R]{} % Empty center footer
+\fancyfoot[C]{\thepage} % Page numbering for right footer
+\renewcommand{\headrulewidth}{0pt} % Remove header underlines
+\renewcommand{\footrulewidth}{0pt} % Remove footer underlines
+\setlength{\headheight}{13.6pt} % Customize the height of the header
+\setlength{\footskip}{20pt} % Customize the height of the header
+
+\numberwithin{equation}{section} % Number equations within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{figure}{section} % Number figures within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{table}{section} % Number tables within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+
+%\setlength\parindent{0pt} % Removes all indentation from paragraphs - comment this line for an assignment with lots of text
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} % Create horizontal rule command with 1 argument of height
+
+\title{	
+\normalfont \normalsize 
+\textsc{University Wisconsin Madison, Computer Science Department} \\ [25pt] % Your university, school and/or department name(s)
+\horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
+\huge CS704 Assignment 1\\ % The assignment title
+\horrule{2pt} \\[0.5cm] % Thick bottom horizontal rule
+}
+
+\author{Yan Zhai} % Your name
+
+\date{\normalsize\today} % Today's date or a custom date
+
+\begin{document}
+
+\maketitle % Print the title
+
+%----------------------------------------------------------------------------------------
+%	PROBLEM 1
+%----------------------------------------------------------------------------------------
+\section{de Bruijn Form}
+
+%------------------------------------------------
+\subsection{Part A}
+If I understood correctly, $\lambda x. \lambda z. z$ should be an counter example. The original and alpha reduced form should both have same de Bruijn Form $\lambda . \lambda . 1$
+
+But I don't see the emphasis inside the parenthesis, saying $z$ should occur as a variable, not just $\lambda z$ . If it says I should provide an example of having free variable $z$ in $M$, then I think it's an impossible task, since after alpha reduction, the free variable $z$ would become bounded; however, in original form, the de-Bruijn indices at same place would be chosen from free variable set, always larger than bounded variable.
+
+%------------------------------------------------
+\subsection{Part B}
+$\lambda x. \lambda z. x$ would be the case. Original form reduced to $ \lambda . \lambda . 2 $.
+But the alpha reduced form would become $\lambda . \lambda . 1$
+
+
+%----------------------------------------------------------------------------------------
+%	PROBLEM 2
+%----------------------------------------------------------------------------------------
+\section{Reduction}
+
+%------------------------------------------------
+\subsection{Part A: NOR vs AOR}
+The advantage of AOR is fewer reduce times. The NOR on the other hand would always produce the norm form if the lambda expression has such a form.
+
+\begin{itemize}
+\item Example of AOR advantage: $M = (\lambda x. xx) ((\lambda y. y)z)$ \\
+In this example, AOR would require only two reductions, while NOR requires three:
+\begin{align*}
+  M & \xrightarrow{\text{AOR}} (\lambda x. xx) z\\
+    & \xrightarrow{\text{apply z}} zz\\
+  \\
+  M & \xrightarrow{\text{NOR}} ((\lambda y. y)z) ((\lambda y. y)z)\\
+    & \xrightarrow{\text{apply 1st z}} z(\lambda y. y)z\\
+    & \xrightarrow{\text{apply 2nd z}} zz
+\end{align*}
+
+\item Example of NOR advantage: $M=(\lambda x. 1) (\lambda y. yy) (\lambda y. yy)$\\
+In this example, the NOR would produce 1 as the result of applying following lambda expression, but AOR would result in infinite loop.
+
+\end{itemize}
+
+%------------------------------------------------
+\subsection{Part B: Outermost Reduction}
+It's not equal. Consider following case:
+\begin{align*}
+  ((\lambda x. \lambda y. x) 1) ((\lambda z. zz) (\lambda z. zz)) \\
+  M = (\lambda x. \lambda y. x), N = (\lambda z.zz) (\lambda z.zz)
+\end{align*}
+
+In above example, there are two redexes $(M 1)$, and $N$, which appears in the same level. NOR would first reduce $(M 1)$ to
+$ (\lambda y. 1) $, and then reduce to 1. However, Rightmost-outermost would result in forever loop when reducing $N$. So this two orders are not equal.
+
+%------------------------------------------------
+\subsection{Part C: Innermost Reduction}
+Leftmost-innermost reduction (LIR) and rightmost-innermost reduction(RIR) reduction will share same fate of termination.
+We prove this by induction on number of redexes within a finite lambda expression $M$. We record this property as $f(M,n)$, which asserts whether LIR and RIR are equal on a $\lambda$-expression with $n$ redexes.
+
+\begin{itemize}
+  \item if $M$ is in norm form or contains only one redex is easy to reason, such that $f(M,0) and f(M,1)$ both hold.
+  \item assume $f(M,k)$ holds for $k < n, n \geq 2$, then to prove $f(M,n)$ holds, we first have following observations:\\
+    \begin{itemize}
+      \item if $M$ is $\lambda x. M'$, then $f(M,n) = f(M',n)$, since outermost $\lambda$-expression is not a redex.
+    \end{itemize}
+    Based on above point, we just need to prove: for $\lambda$-expression $M$ with form $XY$, $f(XY,n)$ holds. For simplicity, we assume $X$ has $k_1$ redexes, and $Y$ has $k_2$ redexes, $k_1,k_2 \in \mathbb{N}, k_1 + k_2 \leq n$
+    \begin{enumerate}
+      \item if $XY$ is a redex, which means $X=\lambda x. X'$, then $k_1,k_2 <n$, so $f(X',k_1), f(Y,k_2)$ both hold according to induction assumption. 
+	Now if we reduce $M'$ with LIR, it will be:
+	\begin{align*}
+	  XY & \xrightarrow{\text{LIR}} \lambda x. LIR(X')\,\,Y\\
+	     & \xrightarrow{\text{LIR}} \lambda x. LIR(X')\,\,LIR(Y)\\
+	     & \xrightarrow{\text{reduce LIR(X') LIR(Y)}} LIR(X') [x=LIR(Y)]
+	\end{align*}
+	And if we reduce M' with RIR, it will be:
+	\begin{align*}
+	  XY & \xrightarrow{\text{RIR}} \lambda x. X'\,\,RIR(Y)\\
+	     & \xrightarrow{\text{RIR}} \lambda x. RIR(X')\,\,RIR(Y)\\
+	     & \xrightarrow{\text{reduce RIR(X') RIR(Y)}} RIR(X') [x=RIR(Y)]\\
+	     & \xrightarrow{\text{$f(X',k_1), f(Y,k_2)$ holds}} LIR(X') [x=LIR(Y)]
+	\end{align*}
+	so $f(XY,n)$ holds.
+      \item if $XY$ is not a redex, and $k_1, k_2 < n$, then we have following LIR: 
+	\begin{align*}
+	  XY & \xrightarrow{\text{LIR}} LIR(X)\,\,Y\\
+	     & \xrightarrow{\text{LIR}} LIR(X)\,\,LIR(Y)
+	\end{align*}
+	One thing to note is even $LIR(X) Y$ becomes a redex, innermost-reduction will still dive into $Y$ first. Thus it has above equation.\\
+	Similarly, when we perform RIR:
+	\begin{align*}
+	  XY & \xrightarrow{\text{RIR}} X\,\,RIR(Y)\\
+	     & \xrightarrow{\text{RIR}} RIR(X)\,\,RIR(Y)\\
+	     & \xrightarrow{f(X,k_1), f(Y,k_2) \text{holds}} LIR(X) LIR(Y)
+	\end{align*}
+	so $f(XY,n)$ holds.
+      \item if $XY$ is not a redex, and $k_1 = 0$ (or $k_2 = 0$), then $k2 = n$ (or $k1 = n$). Now the problem becomes proving $f(Y,n)$ (or $f(X,n)$). Combining the facts that both $X$ and $Y$ have smaller length than $M$, and $M$ has finite length, we can not repeat this process forever. So we must come to above two cases finally. And apparently $f(XY,n)$ holds.
+    \end{enumerate}
+  \item combine the above points, $f(M,n)$ holds for any $\lambda$-expression $M$ with any natural number $n$ redexes.
+\end{itemize}
+
+%------------------------------------------------
+\subsection{Part D: Simple Questions}
+\begin{enumerate}
+  \item false. Not every lambda term has a normal form like $(\lambda x.xx)(\lambda x.xx)$.
+  \item true. Just apply alpha-reduction to it produces the correspondence.
+  \item true. Y-combinator serves for this purpose.
+  \item true. Every lambda term is fixed point of $\lambda x.x$.
+  \item true. $\lambda x.x$ is its own fixed point.
+\end{enumerate}
+
+
+%----------------------------------------------------------------------------------------
+%	PROBLEM 3
+%----------------------------------------------------------------------------------------
+\section{Logical Operations}
+%------------------------------------------------
+\subsection{Part A: \textit{NOT} Operation}
+Observation: to define \textit{NOT}, we just need reverse the result of \textit{TRUE} and \textit{FALSE}, so it could be:
+\begin{align}
+  \textit{NOT}=\lambda x. x\,\,\textit{FALSE\,\,TRUE} \label{eq:NOT}
+\end{align}
+
+Equation~\eqref{eq:NOT} simply boxes the two selector \textit{FALSE} and \textit{TRUE}, so that when applying with \textit{FALSE}, second argument \textit{TRUE} is returned, or vice versa for applying \textit{TRUE}.
+
+%------------------------------------------------
+\subsection{Part B: \textit{XOR} Operation}
+Observation: this is just a complex version of \textit{NOT}: we receive two arguments and produce one selector. Using equation~\eqref{eq:NOT}, we could define \textit{XOR} as:
+\begin{align}
+  \emph{XOR}=\lambda x. \lambda y. x (\textit{NOT\,\,} y) y \label{eq:XOR}
+\end{align}
+
+We could verify the result is correct. For simplicity, we use T and F for abbreviation of \textit{TRUE} and \textit{FALSE}
+\begin{align*}
+  \textit{XOR\,\,T\,\,T}& \rightarrow (\lambda x. \lambda y. x (\textit{NOT\,\,} y) y) T\,\,T\\
+       & \rightarrow (\lambda y. T (\textit{NOT\,\,} y) y) T\\
+       & \rightarrow (T (\textit{NOT\,\,} T) T)\\
+       & \rightarrow \textit{NOT\,\,} T\\
+       & \rightarrow F\\
+  \textit{XOR\,\,T\,\,F}& \rightarrow (\lambda x. \lambda y. x (\textit{NOT\,\,} y) y) T\,\,F\\
+       & \rightarrow (\lambda y. T (\textit{NOT\,\,} y) y) F\\
+       & \rightarrow (T (\textit{NOT\,\,} F) F)\\
+       & \rightarrow \textit{NOT\,\,} F\\
+       & \rightarrow T\\
+  \textit{XOR\,\,F\,\,T}& \rightarrow (\lambda x. \lambda y. x (\textit{NOT\,\,} y) y) F\,\,T\\
+       & \rightarrow (\lambda y. F (\textit{NOT\,\,} y) y) T\\
+       & \rightarrow (F (\textit{NOT\,\,} T) T)\\
+       & \rightarrow T\\
+  \textit{XOR\,\,F\,\,F}& \rightarrow (\lambda x. \lambda y. x (\textit{NOT\,\,} y) y) F\,\,F\\
+       & \rightarrow (\lambda y. F (\textit{NOT\,\,} y) y) F\\
+       & \rightarrow (F (\textit{NOT\,\,} F) F)\\
+       & \rightarrow F\\
+\end{align*}
+
+
+%----------------------------------------------------------------------------------------
+%	PROBLEM 4
+%----------------------------------------------------------------------------------------
+\section{Non-terminate Program}
+%----------------------------------------------------------------------------------------
+A possible solution could be like this:
+\begin{lstlisting}[language=haskell]
+	f1 f = f f1
+	f2 f = f f2
+	main = do
+		f2 f1
+		return ()
+\end{lstlisting}
+
+The above code would do recursion forever until the stack overflows.
+
+\end{document}
