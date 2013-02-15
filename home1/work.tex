@@ -23,7 +23,7 @@
 \usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
 \usepackage{fourier} % Use the Adobe Utopia font for the document - comment this line to return to the LaTeX default
 \usepackage[english]{babel} % English language/hyphenation
-\usepackage[fleqn]{amsmath}
+\usepackage{amsmath}
 \usepackage{amsfonts,amsthm} % Math packages
 \usepackage{indentfirst}
 \usepackage[top=0.8in, bottom=1in, left=0.75in, right=0.75in]{geometry}
@@ -93,38 +93,38 @@
     Proof:
     \begin{itemize}
       \item $f(x)=log x$ is monotonic increase on $[1,\infty]$, so:
-	\begin{flalign*}
+	\begin{align*}
 	  \int^{n}_{n-1}log x\,dx \leq\,log n\,\leq \int^{n+1}_{n}log x\,dx
-	\end{flalign*}
+	\end{align*}
 
       \item using integration by parts formula, we have:
-	\begin{flalign*}
+	\begin{align*}
 	  \int^{n}_{1}log x\,dx = n log n + O(n log n)
-	\end{flalign*}
+	\end{align*}
 
       \item $f(n) \in O(n log n)$, because:
-	\begin{flalign*}
+	\begin{align*}
 	  f(n) = \sum_{i=1}^{n}log\,i 
 	       \leq \sum_{i=2}^{n}\int^{i+1}_{i} log x\,dx
 	       = \int^{n+1}_{2}log x\,dx
 	       = O(n log n)
-      	\end{flalign*}
+      	\end{align*}
       \item $f(n) \in \Omega(n log n)$, because:
-	\begin{flalign*}
+	\begin{align*}
 	  f(n) = \sum_{i=2}^{n}log\,i
 	       \geq \sum_{i=2}^{n}\int^{i}_{i-1} log x\,dx
 	       = \int^{n}_{1}log x\,dx
 	       = \Omega(n log n)
-      	\end{flalign*}
+      	\end{align*}
       \item combined above points, so $f(n) \in \Theta(n log n)$
     \end{itemize}
 
 % Question 1.2
 %------------------------------------------------
   \item use Stirling approximation and logarithm property, we have:
-    \begin{flalign*}
+    \begin{align*}
       f_8(n) < f_4(n) < f_3(n) < f_7(n) < f_1(n) < f_5(n) < f_2(n) < f_6(n)
-    \end{flalign*}
+    \end{align*}
 
 \end{enumerate}
 
@@ -184,7 +184,7 @@
 
 % Question 2.c
 %------------------------------------------------
-  \item $T_4(n) < T_1(n) < T_3(n) < T_4(n)$
+  \item $T_4(n) < T_1(n) < T_3(n) < T_2(n)$
 
 \end{enumerate}
 
@@ -219,10 +219,10 @@
 % Question 4.1
 %------------------------------------------------
   \item one possible solution is:
-    \begin{flalign*}
+    \begin{align*}
       & f(n) = (N-1)!, \;\;n \in [(N-1)!, N!),\;\;N \in \mathbb{N}\\
       & g(n) = \frac{n}{2}
-    \end{flalign*}
+    \end{align*}
     It's not hard to see that $g(N!) < f(N!)$ and $g(3N!) > f(3N!)$ when $N$ is large enough, thus
     $f(n) \notin O(g(n))$ and $g(n) \notin O(f(n))$.
 
@@ -230,25 +230,28 @@
 %------------------------------------------------
   \item it suffices to show that for some pair of functions, such $h$ does not exist.\\
     Let $f_1,f_2$ be $f,g$ we defined above. If there is a $h$ so that 
-    \begin{flalign*}
+    \begin{align*}
       & f_1(n) \in O(h(n)) \\
       & f_2(n) \in O(h(n)) \\
       & h(n) \in O(f_i(n)), i \in {1,2}
-    \end{flalign*}
+    \end{align*}
     assume $i$ is $1$, then $f_2(n) \in O(h(n)) \in O(O(f_1(n))) \in O(f_1(n))$. But this
     contradicts the fact $f(n) \notin O(g(n))$ and $g(n) \notin O(f(n))$.
 
 % Question 4.3
 %------------------------------------------------
-  \item for any finite set of such functions, let $h(n)= \sum^{k}_{i=1}f_i(n)$, we have:
-    \begin{flalign*}
-      f_i(n) \in O(f_i(n)) \in O(\sum&{k}_{i=1}f_i(n)) \in O(h(n)) \\
-      f_i(n) \in O(h'(n)) & \rightarrow h(n) \in \sum^{k}_{i=1} O(h'(n)) \\
+  \item for any finite set of such functions:
+    \begin{align*}
+      &\text{if:} h(n)= \sum^{k}_{i=1}f_i(n), \\
+      &\quad \text{then for any valid j}\;\; f_j(n) \in O(f_j(n)) \in O(\sum^{k}_{i=1}f_i(n)) \in O(h(n)) \\
+    \end{align*}
+    and for any $h'$ satisfies condition(1), we have:
+    \begin{align*}
+      f_i(n) \in O(h'(n)) & \rightarrow h(n) \in \sum^{k}_{i=1}O(h'(n)) \\
 			  & \rightarrow h(n) \in \O(kh'(n))\\
      			  & \xrightarrow{\text{$k$ is finite constant}} h(n) \in \O(h'(n))\\
-    \end{flalign*}
-    this means for any $h'$ satisfies condition(1), we have $h(n) \in O(h'(n))$.
-
+    \end{align*}
+    so $h(n)$ is what we are looking for.
 \end{enumerate}
 
 \end{document}
