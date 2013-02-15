@@ -34,6 +34,7 @@
 \usepackage{tikz} % Used for recursion tree
 
 \usepackage{lipsum} % Used for inserting dummy 'Lorem ipsum' text into the template
+\usepackage{setspace}
 
 \usepackage{sectsty} % Allows customizing section commands
 \allsectionsfont{\normalfont\scshape} % Make all sections centered, the default font and small caps
@@ -49,8 +50,7 @@
 \setlength{\headheight}{13.6pt} % Customize the height of the header
 \setlength{\footskip}{20pt} % Customize the height of the header
 
-\renewcommand*{\familydefault}{\ttdefault} %fonts setting
-\usepackage[T1]{fontenc}
+\renewcommand*{\familydefault}{\rmdefault} %fonts setting
 \newcommand{\Rn}[1]{\uppercase\expandafter{\romannumeral #1\relax}}
 
 \numberwithin{equation}{section} % Number equations within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
@@ -80,6 +80,14 @@
 \begin{document}
 
 \maketitle % Print the title
+
+\singlespacing
+\newdimen\origiwspc%
+\newdimen\origiwstr%
+\origiwspc=\fontdimen2\font% original inter word space
+\origiwstr=\fontdimen2\font
+
+\fontdimen2\font=0.8ex
 
 %----------------------------------------------------------------------------------------
 %	PROBLEM 1
