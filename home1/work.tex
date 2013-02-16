@@ -212,7 +212,7 @@
   \item this inductive base is not as expressive as its alternative form: for $b \leq b^*$, the algorithm works. The proof contains two part:
     \begin{itemize}
       \item When $b+1$ is an odd number, \textit{fastExp}$(a,b+1)=a\times$\textit{fastExp}$(a,b)$. Use the inductive base, we have got \textit{fastExp}$(a,b+1) = a^{b+1}$
-      \item When $b+1$ is an even number, \textit{fastExp}$(a,b+1)=$\textit{fastExp}$(a, \frac{b}{2})^2$ 
+      \item When $b+1$ is an even number, \textit{fastExp}$(a,b+1)=$\textit{fastExp}$(a, \frac{b+1}{2})^2= (a^{\frac{b+1}{2}})^2=a^{b+1}$ 
     \end{itemize}
     Now using the induction, we have concluded \textit{fastExp} works for any $n \in \mathbb{N}$
 
