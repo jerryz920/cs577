@@ -1,1 +1,2 @@
-This is course material for CS577-spring13
+cs577
+assignment and project for cs577
