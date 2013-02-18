@@ -148,9 +148,9 @@
   \item We have following definitions:
     \begin{align*}
       & T_1(n) = O(n) + T_1(\frac{3n}{4}) + T_1(\frac{n}{4}) & (\Rn{1}) \\
-      & T_2(n) = 2T(n-1) + O(1) & (\Rn{2}) \\
-      & T_3(n) = T((1-\epsilon)n) + O(n^2) & (\Rn{3})  \\
-      & T_4(n) = \sqrt{n}T(\sqrt{n}) + O(n) & (\Rn{4}) 
+      & T_2(n) = 2T_2(n-1) + O(1) & (\Rn{2}) \\
+      & T_3(n) = T_3((1-\epsilon)n) + O(n^2) & (\Rn{3})  \\
+      & T_4(n) = \sqrt{n}T_4(\sqrt{n}) + O(n) & (\Rn{4}) 
     \end{align*}
 
 % Question 2.b
@@ -158,16 +158,16 @@
   \item 
     \begin{enumerate}[label={\roman*.}]
       \item Using recursion tree method to expand the expression, we could know
-	that at each level of the tree, it would require $O(n)$ time to
+	that at each level of the tree, it would require $h(n) \in O(n)$ time to
 	process. Although the tree is not a full binary tree, we could infer its size
 	should be between a full binary tree with height $log_4n$ and
 	$log_\frac{4}{3}n$. So we have following inequality:
 	\begin{align*}
-	  O(n) \times log_4n \leq T_1(n) \leq O(n) \times log_\frac{4}{3}n
+	  h(n) \times log_4n \leq T_1(n) \leq h(n) \times log_\frac{4}{3}n
 	\end{align*}
 	The lower bound and upper bound differs only in constant coefficient, thus:
 	\begin{align*}
-	  T_1(n)=O(n log n)
+	  T_1(n) \in O(h(n) logn) \in O(n log n)
 	\end{align*}
 
       \item This simple equation could be recursively expanded as:
