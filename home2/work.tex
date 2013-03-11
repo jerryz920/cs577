@@ -1,0 +1,245 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Short Sectioned Assignment
+% LaTeX Template
+% Version 1.0 (5/5/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Frits Wenneker (http://www.howtotex.com)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[paper=a4, fontsize=11pt]{scrartcl} % A4 paper and 11pt font size
+
+\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+\usepackage{fourier} % Use the Adobe Utopia font for the document - comment this line to return to the LaTeX default
+\usepackage[english]{babel} % English language/hyphenation
+\usepackage{amsmath}
+\usepackage{indentfirst} 
+\usepackage{amsfonts,amsthm} % Math packages
+\usepackage{indentfirst}
+\usepackage[top=0.8in, bottom=1in, left=0.75in, right=0.75in]{geometry}
+\usepackage{listings}
+\usepackage{courier} % Required for the courier font
+\usepackage{inconsolata} % Required for inconsolata fonts
+\usepackage{enumitem} % Used for the enumerate index
+\usepackage{tikz} % Used for recursion tree
+
+\usepackage{lipsum} % Used for inserting dummy 'Lorem ipsum' text into the template
+\usepackage{setspace}
+
+\usepackage{sectsty} % Allows customizing section commands
+\allsectionsfont{\normalfont\scshape} % Make all sections centered, the default font and small caps
+
+\usepackage{fancyhdr} % Custom headers and footers
+\pagestyle{fancy} % Makes all pages in the document conform to the custom headers and footers
+\fancyhead{} % No page header - if you want one, create it in the same way as the footers below
+\fancyfoot[L]{} % Empty left footer
+\fancyfoot[R]{} % Empty center footer
+\fancyfoot[C]{\thepage} % Page numbering for right footer
+\renewcommand{\headrulewidth}{0pt} % Remove header underlines
+\renewcommand{\footrulewidth}{0pt} % Remove footer underlines
+\setlength{\headheight}{13.6pt} % Customize the height of the header
+\setlength{\footskip}{20pt} % Customize the height of the header
+
+\renewcommand*{\familydefault}{\rmdefault} %fonts setting
+\newcommand{\Rn}[1]{\uppercase\expandafter{\romannumeral #1\relax}}
+
+\numberwithin{equation}{section} % Number equations within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{figure}{section} % Number figures within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{table}{section} % Number tables within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+
+%\setlength\parindent{0pt} % Removes all indentation from paragraphs - comment this line for an assignment with lots of text
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} % Create horizontal rule command with 1 argument of height
+
+\title{	
+\normalfont \normalsize 
+\textsc{University Wisconsin Madison, Computer Science Department} \\ [25pt] % Your university, school and/or department name(s)
+\horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
+\huge CS577 Assignment 2\\ % The assignment title
+\horrule{2pt} \\[0.5cm] % Thick bottom horizontal rule
+}
+
+\author{Lei Kang, Liang Wang, Yan Zhai} % Your name
+
+\date{\normalsize\today} % Today's date or a custom date
+
+\begin{document}
+
+\maketitle % Print the title
+
+\singlespacing
+\newdimen\origiwspc%
+\newdimen\origiwstr%
+\origiwspc=\fontdimen2\font% original inter word space
+\origiwstr=\fontdimen2\font
+
+\fontdimen2\font=0.8ex
+
+%----------------------------------------------------------------------------------------
+%	PROBLEM 1
+%----------------------------------------------------------------------------------------
+\section*{Problem 1}
+
+\begin{enumerate}[label={1.\arabic*}]
+% Question 1.1
+%------------------------------------------------
+  \item 
+First we say  $L_{i}$ is the ${i}$ th layer when peform BFS from a node ${v}$ in a graph ${G}$ (as the definition in book P79) $L_{0}$=\{${v}$\}.\\
+We modify the original BFS .In each vertex ${x}$,we add an additional field ${C}$ to count the number of shortest paths from the ${v}$ to that vertex ${x}$.So initially for start node ${v}$,we set ${C(v)}$=1(itself),for other vertexs ${x}$
+we set ${C(x)}$=0.\\
+Then we use BFS.During BFS process, for a node ${x}$ in $L_{j}$,we set ${C(x)}$ to be the sum of the ${paths}$ of its neighbor nodes in $L_{j-1}$,So
+\begin{align*}
+ C(x) = \sum_{y \in Neighbors(x)  AND  layer(y)=layer(x)-1 } C(y)
+\end{align*}
+All the shortest paths from v to a node w (layer j) must have length i,and each of these shortest path is like
+${<v,x_1,x_2...x_i..x_j=w>}$,where ${x_i}$ is the node at ${L_i}$ in the BFS tree and ${1 \leq i \leq j}$
+The only changed to the original BFS is the couter C(x) for each vertex x.Obviously, the initialization take O(n)
+time and updating counter at any vertex x takes O(|Neighbors(x)|) time.Since 
+\begin{align*}
+\sum_{x \in V(G) } |Neighbors(x)|=2E=2m
+\end{align*}
+and the original BFS takes ${O(m+n)}$,therefore the total time of this algorithm is:\\
+${O(m+n)+O(m)+O(n)=O(m+n)}$
+
+\end{enumerate}
+
+
+%----------------------------------------------------------------------------------------
+%	PROBLEM 2
+%----------------------------------------------------------------------------------------
+\section*{Problem 2}
+
+\begin{enumerate}[label={2.(\alph*)}]
+% Question 2.a
+%------------------------------------------------
+ \item Let ${s}$ be the root of ${G_\pi}$.Then consider the following 2 situations: \\
+(1)If ${s}$ has at most one child: \\
+if ${s}$ has no child, ${G}$ must have exactly one node, so in this case, ${s}$ is not an articulation point.\\
+if ${s}$ has one child x, if ${s}$ is removed , only the edge ${(s,x)}$and the back edges to ${s}$ will be removed. so that all other nodes will still be connected. So ${s}$ is not an articulation point.\\
+(2)If  ${s}$ has at least two children: since there is no any cross edge for each child tree in ${G}$ DFS trees , then deleting  ${s}$ will make each child tree disconnected. Thus if ${s}$ is an articulation point of ${G}$ then it at least has two children.
+
+% Question 2.b
+%------------------------------------------------
+  \item 
+We prove it from two directions:\\
+(1) If v has a child s such that there is no back edge from s or from any descendant
+of s to a proper descendant of v, then v is an articulation point.\\
+Prove: Consider the subtree of the DFS tree rooted at s. Consider edge (x,y), which x is  in this subtree.Then y, must either be v or within the subtree. Because if (x,y) is a tree edge, y must be in the subtree; otherwise, (x, y) is a back edge, y could not be conneced to an ancestor of v in given condition, so that it must link to v or a node in the subtree. In this case,if we remove v, x and the parent of v  must be disconnected. So v must be an articulation point.\\
+(2) If for each child s of v, there is some back edge from s or from some descendant
+of s to a proper descendant of v, v is not an articulation point. \\
+Prove: let p be the parent of v in the DFS tree.We assume v has k children in the DFS tree. Then consider delete v from the graph. For the DFS tree, it will be partitioned into exactly (k+1) connected components,where the vertex p and v's child vertices be indistinct parts.However, from our condition, each child vertex of v  must be connected to p in G. Thus, the graph G after removal of v is still connected, so that v is not an articulation point.
+
+% Question 2.c
+%------------------------------------------------
+  \item
+We can compute v.low for all vertices v by starting at the leaves of the tree ${G_\pi}$. We compute v.low as follows:
+v.low = min(v.d, min y.low, min w.d) y∈children(v) backedge(v,w)
+For leaves v, there are no descendants u of v, so this returns either v.d or w.d is there is a back edge (v, w). For vertices v in the tree, if v.low = w.d, then either there is a back edge (v, w), or there is a back edge (u, w) for some descendant u. The last term in the min expression handles the case where (v, w) is a back edge. If u is a descendant of v in ${G_\pi}$, we know that u.d > v.d since u is visited after v in the depth first search. Therefore, if w.d < v.d, we also have w.d < u.d, so we will have set u.low = w.d. The middle term in the min expression therefore handles the case where (u, w) is a back edge for some descendant u. Since we start at the leaves of the tree and work our way up, we will have computed everything we need when computing v.low.
+For each node v, we look at v.d and something related to all the edges leading from v, either tree edges leading to the children or back edges. So, the total running time is linear in the number of edges in G, O(E).
+
+% Question 2.d
+%------------------------------------------------
+  \item 
+For root,we only need to check if it has more than 1 child based on (b).If root has more than 1 child, it is a articulation point
+O(1) time.\\
+Then for other vertices  use the same algorithm in (c). If s.low >= v.d, which means that subtree rooted at s has no back edge to  the ancestors of v in G,then delete v would disconnect G, because based on (b)  any nonroot vertex v is an articulation point if and only if it has a child s in  ${G_\pi}$ with no back edge to a proper ancestor of v. The algorithm in (c) take O(E) time.
+So the total time is O(E).
+
+% Question 2.e
+%------------------------------------------------
+  \item 
+We prove it from two directions:\\
+(1)if an edge (u, v) is a bridge then it can not lie on a simple cycle .\\
+Prove:Assuming (u,v) is a bridge. After we  remove (u,v),G  will be disconnected, so  then there is no path from u to v .However , if (u,v) is on a simple cycle, then based on the property of cycle, there will be a path like u.x1.x2...xn.v.u,remove edge(u,v) will not affect the other edges in this path, so there still is a path from u to v,which means (u,v) is not a bridge.This is against our assumption. So (u,v) is not on a simple cycle.  
+(2) if an edge (u, v) is not on a simple cycle, then it is a bridge.\\
+Prove: Beacuse if edge (u,v) is not on a simple cycle, there will be only one path from u to v (If there are two paths u.x1.x2...xn.v and  u.v, then u.x1..xn.v.u is a cycle ) Then delete (u,v) would disconnect u,v 
+
+
+% Question 2.f
+%------------------------------------------------
+  \item xxxxxxxxxxxxxxxxx
+Use the algorithms and conclusions in (c)  (d)
+
+Any bridge in the graph G must exist in the graph Gπ. Otherwise, assume that (u, v) is a bridge and that we explore u first. Since removing (u, v) disconnects G, the only way to explore v is through the edge (u, v). So, we only need to consider the edges in Gπ as bridges. If there are no simple cycles in the graph that contain the edge (u, v) and we explore u first, then we know that there are no back edges between v and anything else. Also, we know that anything
+in the subtree of v can only have back edges to other nodes in the subtree of v. Therefore, we will have v.low = v.d since v is the first node visited in the subtree rooted at v. Thus, we can look over all the edges of Gπ and see whether v.low = v.d. If so, then we will output that (parent[v]Gπ , v) is a bridge, i.e. that v and its parent in Gπ form a bridge. Computing v.low for all vertices v takes time O(E) as we showed in part (c). Looping over all the edges takes time O(V ) since there are |V | − 1 edges in Gπ . Thus the total time to calculate the bridges in G is O(E).
+
+
+% Question 2.g
+%------------------------------------------------
+  \item xxxxxxxxxxxxxxxxxx
+A  Biconnected component of G is a maximal set of edges such that every two edges in the set lie on a common simple cycle, thus all the edges inside this component are not bridges based on (e) .
+So all the other edges are bridge edges. Thus, it partitions the nonbridge edges of G.
+
+% Question 2.h
+%------------------------------------------------
+  \item XXXXXXXXXXXX
+
+\end{enumerate}
+
+
+%----------------------------------------------------------------------------------------
+%	PROBLEM 3
+%----------------------------------------------------------------------------------------
+\section*{Problem 3}
+%------------------------------------------------
+\begin{enumerate}[label={3.\arabic*}]
+% Question 3.1
+%------------------------------------------------
+  \item 
+I think the running time should be ${O(L log L + Ln)}$\\
+We reduce the problem to the shortest-path problem:\\
+First we construct a graph with  L vertices, labeled ${v_0,v_1...v_{L-1}}$.
+For a vertex ${v_x}$,we perform the following process:For  each ${l_i (i=1,2...n)}$,calculate ${(x+l_i) mod L }$,say ${y}$
+then we add a edge from ${v_x }$ to ${v_y}$, and ${ w(v_x, v_y) }$ is the value ${ l_i }$ .
+So for two nodes ${v_x}$ and ${v_y}$,if ${v_x-v_y \equiv l_i (mod L) }$,then there is an edge  between them. \\
+Example:say  ${ n=2,l_1=2,l_2=3  }$ and ${ L=7}$ . So  we  have  7  vertices: ${  v_0,v_1...v_6}$. \\
+At vertex  ${  v_5,5+l_1=5+2 \equiv 0  mod 7 }$ ,so there is an edge from ${v_5}$ to ${ v_0}$ with weight ${ l_1 }$,\\
+${ 5+l_2=5+3 \equiv 1 mod 7 }$ ,so there is an edge from ${v_5}$  to ${ v_1}$ with weight  ${ l_2 }$\\
+This problem is converted to find the shortest path from ${v_0 }$  to  ${v_0 }$.\\
+Then,we add a anthor node ${v_L}$,serve as the "mirror" vertex  of ${v_0}$,which means ${v_L}$ connects to the same vertices
+as ${v_0}$,so this problem is converted to find the shortest path from ${v_0 }$  to  ${v_L}$.\\
+Then we use Dijkstra's algorithm.The graph has L + 1 vertices and at most (L + 1)n edges; constructing it takes O(Ln) time. The cost of running Dijkstra's algorithm on the graph is ${O(L log L + Ln)}$, hence the total running time is also ${O(L log L + Ln)}$.
+
+\end{enumerate}
+
+%----------------------------------------------------------------------------------------
+%	PROBLEM 4
+%----------------------------------------------------------------------------------------
+\section*{Problem 4}
+%----------------------------------------------------------------------------------------
+\begin{enumerate}[label={4.\arabic*}]
+% Question 4.1
+%------------------------------------------------
+  \item 
+%\setlength{\parindent}{2em} while (G is not a tree) \par
+%	\setlength{\parindent}{4em}largestcost = 0; e'= none; \par
+%	 for (every edge e in G) \par
+%		\setlength{\parindent}{6em }if delete e would not disconnect G and cost(e) > largestcost  \par
+%			\setlength{\parindent}{8em }largestcost = cost(e); \par
+%\setlength{\parindent}{4em }delete e' from G \par
+%\setlength{\parindent}{0em} return G, which is a minimum spanning tree\par
+In the graph ${G }$,use BFS until find a cycle,then delete the heaviest edge on this cycle.
+For each 'delete' operation,we get a new Graph ${G_i}$ and we say the original graph ${G}$ is ${G_0}$.\\
+so ${G_i }$ is still connected and has the same spanning tree with ${G_i -1}$,and   but ${E(G_i)=E(G_i-1)-1 (i=1,2..)}$ \\(For any cycle C in the graph, if the weight of an edge e of C is larger than the weights of all other edges of C, then this edge cannot belong to an MST).
+Repeat same process 8 times (total 9 times),the ${G_0}$ become a connected graph ${G_9}$ .${G_9}$ has at most  n-1 edges and the same spanning tree as ${G_0}$.
+In fact,${G_9}$ is connected , has n vertices and n-1 edges,so ${G_9}$ is a tree.From previous process,we know ${G_9}$ is also the minimum spanning tree of ${G_0=G}$.\\
+BFS and find heaviest edge take O(V+E)=O((n+8)+n) $\approx$ O(n) time. 
+
+\end{enumerate}
+
+\end{document}
