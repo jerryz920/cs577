@@ -157,6 +157,7 @@ v.d means depth of v,v.parent means parent node of v
 Init: for each v in V: v.visited=false:\\
 count=0\\
 res=0\\
+\\
 DFS(v)\\
 	v.visited=true\\
 	count=count+1\\
@@ -195,9 +196,11 @@ Prove: Beacuse if edge (u,v) is not on a simple cycle, there will be only one pa
 %------------------------------------------------
   \item 
 Use the algorithms and conclusions in (c)  (d)\\
-Any bridge in the graph G must exist in the graph ${G_\pi}$. Otherwise, assume that (u, v) is a bridge and that we explore u first. Since removing (u, v) disconnects G, the only way to explore v is through the edge (u, v). So, we only need to consider the edges in ${G_\pi}$s as bridges. If there are no simple cycles in the graph that contain the edge (u, v) and we explore u first, then we know that there are no back edges between v and anything else. Also, we know that anything
-in the subtree of v can only have back edges to other nodes in the subtree of v. Therefore, we will have v.low = v.d since v is the first node visited in the subtree rooted at v. Thus, we can look over all the edges of ${G_\pi}$ and see whether v.low = v.d. If so,  (parent[v] , v) is a bridge, i.e. that v and its parent in ${G_\pi}$ form a bridge.\\
- Computing v.low for all vertices v takes time O(E) as we showed in part (c). Go through all the edges and checking is v.low=v.d use time O(V ) because  there are  |V | − 1 edges in ${G_\pi}$ . So the total time to calculate the bridges in G is O(E).
+Any bridge in the graph G must exist in the graph ${G_\pi}$. Otherwise, assume that (u, v) is a bridge and  we reach u first. Since removing (u, v) disconnects G, the only way to access v is through the edge (u, v). So (u,v) must be in ${G_\pi}$ .So, we only need to consider the edges in ${G_\pi}$s as bridges. \\
+%If there are no simple cycles in the graph that contain the edge (u, v) and we reach u first, then we know that there are no back edges between v and anything else. Also, we know that anything
+%in the subtree of v can only have back edges to other nodes in the subtree of v. Therefore, we will have v.low = v.d since v is the
+%first node visited in the subtree rooted at v. Thus, we can look over all the edges of ${G_\pi}$ and see whether v.low = v.d. If so,  (parent[v] , v) is a bridge, i.e. that v and its parent in ${G_\pi}$ form a bridge.\\
+If we found a child vertex v of u whose low[v] > d[u], then  this edge is a  bridge edge because removing it will disconnect u and v (based on (d)).Computing v.low for all vertices v takes time O(E) as we showed in part (c). Go through all the edges and checking use time O(V ) because  there are |V|- 1 edges in ${G_\pi}$ . So the total time to calculate the bridges in G is O(E).
 
 
 % Question 2.g
@@ -247,8 +250,6 @@ in the subtree of v can only have back edges to other nodes in the subtree of v.
       \item cost of labeling bcc of the bridges, requiring O(E)
     \end{itemize}
     so the total complexity is O(E)
-
-
 \end{enumerate}
 
 
