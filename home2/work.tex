@@ -181,9 +181,37 @@ in the subtree of v can only have back edges to other nodes in the subtree of v.
 
 % Question 2.g
 %------------------------------------------------
-  \item xxxxxxxxxxxxxxxxxx
-A  Biconnected component of G is a maximal set of edges such that every two edges in the set lie on a common simple cycle, thus all the edges inside this component are not bridges based on (e) .
-So all the other edges are bridge edges. Thus, it partitions the nonbridge edges of G.
+  \item 
+
+  To prove this statement, we need to show:
+  \begin{enumerate}
+    \item Any non-bridge edge belongs to a biconnected component.\\
+      According to part(e), we know that such edge should appear on at least one simple cycle. Thus it means it must be in some biconnected component.
+    \item A non-bridge edge can only belong to one biconnected component.\\
+      If not then we assume a non-bridge edge $e=(u,v)$ belongs to two
+      biconnected components $G_1$ and $G_2$. From the definition we just need
+      to show that: for any $e_1=(u_1,v_1)$ and $e_2=(u_2,v_2)$ in $G_1 \cup G_2$, there is a
+      simple cycle containing $e_1$ and $e_2$. If $e_1$ and $e_2$ both belongs
+      to $G_1$ or $G_2$, then it is obvious.  Not losing generality we assume
+      $e_1 \in G_1/G_2$ and $e_2 \in G_2/G_1$, and we show that there is a
+      simple cycle C containing $e_1$ and $e_2$.\\
+
+      For convenience we use $a-b$ to represent there is a simple path between vertex $a$ and $b$. The cycle construction could be following:
+      \begin{itemize}
+	\item according to definition of $e$, there would be a cycle $C_1=(v_1,u_1)-p_1-(u,v)-q_1-(v_1,u_1)$ containing $e$ and $e_1$. Similarly,
+	  we have another cycle $C_2=(v_2,u_2)-p_2-(u,v)-q_2-(v_2,u_2)$. Here $p_1,q_1,p_2,q_2$ are simple paths.
+	\item starting from $u_1$ along the path $p_1-u$, until we meet the first vertex $x$ on $p_2$ or $q_2$. The existence of such vertex is
+	  gauranteed by $u$. Similarly, we could find $y$ by travelling along $q_1-v$. 
+	\item if $x$ and $y$ are on the same path, for example, $p_2$, then we can paste $x-(u_1,v_1)-y$ into cycle $C_2$, replacing
+	  the path of $x-y$, and it's easy to see this new cycle is simple
+	\item if $x$ and $y$ are on the different paths, let $x$ on $p_2$ and $y$ on $q_2$, then paste $x-(u_1,v_1)-y$ into $C_2$ by
+	  replacing the path $x-(u,v)-y$, producing a simple cycle containing $(u1,v1)$ and $(u2,v2)$
+      \end{itemize}
+      So we could always produce a simple cycle containing $e_1$ and $e_2$, thus any non-bridge edge could only appear in one
+      biconnected component.
+
+  \end{enumerate}
+
 
 % Question 2.h
 %------------------------------------------------
