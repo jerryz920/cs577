@@ -215,7 +215,17 @@ in the subtree of v can only have back edges to other nodes in the subtree of v.
 
 % Question 2.h
 %------------------------------------------------
-  \item XXXXXXXXXXXX
+  \item 
+    We could DFS once to compute the biconnected components. But an easier way is to DFS twice: the first time we find all the bridges. Then
+    we remove all the bridges, and do DFS on the generated forest. Each connected sub-graph is then a biconnected component. The correctness
+    is supported by part(2.g), since biconnected components are a partition of the non-bridge graph. The total cost of doing this is:
+    \begin{itemize}
+      \item cost of find all bridges, O(E)
+      \item cost of removing bridges, doing on the original graph requires O(E)
+      \item cost of DFS on the generated forest, requiring O(E)
+    \end{itemize}
+    so the total complexity is O(E)
+
 
 \end{enumerate}
 
