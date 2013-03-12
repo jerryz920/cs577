@@ -198,14 +198,14 @@ in the subtree of v can only have back edges to other nodes in the subtree of v.
 
       For convenience we use $a-b$ to represent there is a simple path between vertex $a$ and $b$. The cycle construction could be following:
       \begin{itemize}
-	\item according to definition of $e$, there would be a cycle $C_1=(v_1,u_1)-p_1-(u,v)-q_1-(v_1,u_1)$ containing $e$ and $e_1$. Similarly,
-	  we have another cycle $C_2=(v_2,u_2)-p_2-(u,v)-q_2-(v_2,u_2)$. Here $p_1,q_1,p_2,q_2$ are simple paths.
+	\item according to definition of $e$, there would be a cycle $C_1=u_1-u-v-v_1-u_1)$ containing $e$ and $e_1$, we define $u_1-u$ as $p_1$, and
+	  $v-v_1$ as $q_1$. Similarly, we have another cycle $C_2=u_2-u-v-v_2-u_2$, and $p_2$,$q_2$ defined correspondingly.
 	\item starting from $u_1$ along the path $p_1-u$, until we meet the first vertex $x$ on $p_2$ or $q_2$. The existence of such vertex is
 	  gauranteed by $u$. Similarly, we could find $y$ by travelling along $q_1-v$. 
-	\item if $x$ and $y$ are on the same path, for example, $p_2$, then we can paste $x-(u_1,v_1)-y$ into cycle $C_2$, replacing
-	  the path of $x-y$, and it's easy to see this new cycle is simple
-	\item if $x$ and $y$ are on the different paths, let $x$ on $p_2$ and $y$ on $q_2$, then paste $x-(u_1,v_1)-y$ into $C_2$ by
-	  replacing the path $x-(u,v)-y$, producing a simple cycle containing $(u1,v1)$ and $(u2,v2)$
+	\item if $x$ and $y$ are on the same path, assuming it to be $p_2$, then we can paste $x-u_1-v_1-y$ into cycle $C_2$, replacing
+	  the path of $x-y$, and it's easy to see this new cycle is simple.
+	\item if $x$ and $y$ are on different paths, let $x$ on $p_2$ and $y$ on $q_2$, then paste $x-u_1-v_1-y$ into $C_2$ by
+	  replacing the path $x-u-v-y$, producing a simple cycle containing $(u1,v1)$ and $(u2,v2)$
       \end{itemize}
       So we could always produce a simple cycle containing $e_1$ and $e_2$, thus any non-bridge edge could only appear in one
       biconnected component.
