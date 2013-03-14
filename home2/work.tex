@@ -74,7 +74,7 @@
 \horrule{2pt} \\[0.5cm] % Thick bottom horizontal rule
 }
 
-\author{Lei Kang, Liang Wang, Yan Zhai} % Your name
+\author{Yan Zhai, Lei Kang, Liang Wang} % Your name
 
 \date{\normalsize\today} % Today's date or a custom date
 
@@ -107,7 +107,7 @@ Then we use BFS.During BFS process, for a node ${x}$ in $L_{j}$,we set ${C(x)}$ 
  C(x) = \sum_{y \in Neighbors(x)  AND  layer(y)=layer(x)-1 } C(y)
 \end{align*}
 All the shortest paths from v to a node w (layer j) must have length i,and each of these shortest path is like
-${<v,x_1,x_2...x_i..x_j=w>}$,where ${x_i}$ is the node at ${L_i}$ in the BFS tree and ${1 \leq i \leq j}$
+${<v,x_1,x_2...x_i..x_j=w>}$,where ${x_i}$ is the node at ${L_i}$ in the BFS tree and ${1 \leq i \leq j}$。
 The only changed to the original BFS is the couter C(x) for each vertex x.Obviously, the initialization take O(n)
 time and updating counter at any vertex x takes O(|Neighbors(x)|) time.Since 
 \begin{align*}
@@ -139,25 +139,46 @@ if ${s}$ has one child x, if ${s}$ is removed , only the edge ${(s,x)}$and the b
 We prove it from two directions:\\
 (1) If v has a child s such that there is no back edge from s or from any descendant
 of s to a proper descendant of v, then v is an articulation point.\\
-Prove: Consider the subtree of the DFS tree rooted at s. Consider edge (x,y), which x is  in this subtree.Then y, must either be v or within the subtree. Because if (x,y) is a tree edge, y must be in the subtree; otherwise, (x, y) is a back edge, y could not be conneced to an ancestor of v in given condition, so that it must link to v or a node in the subtree. In this case,if we remove v, x and the parent of v  must be disconnected. So v must be an articulation point.\\
+Proof: Consider the subtree of the ${G_\pi}$ rooted at s. Consider edge (x,y), which x is  in this subtree.Then y, must either be v or within the subtree. Because if (x,y) is a tree edge, y must be in the subtree; otherwise, (x, y) is a back edge, y could not be conneced to an ancestor of v in such situation, so that it must link to v or a node in the subtree. In this case,if we remove v, x and the parent of v  must be disconnected. So v must be an articulation point.\\
 (2) If for each child s of v, there is some back edge from s or from some descendant
 of s to a proper descendant of v, v is not an articulation point. \\
-Prove: let p be the parent of v in the DFS tree.We assume v has k children in the DFS tree. Then consider delete v from the graph. For the DFS tree, it will be partitioned into exactly (k+1) connected components,where the vertex p and v's child vertices be indistinct parts.However, from our condition, each child vertex of v  must be connected to p in G. Thus, the graph G after removal of v is still connected, so that v is not an articulation point.
+Proof: let p be the parent of v in the ${G_\pi}$.We assume v has k children in the ${G_\pi}$. Then consider delete v from the graph. For ${G_\pi}$ , it will be partitioned into exactly (k+1) connected components,where the vertex p and v's child vertices be indistinct parts.However, from our condition, each child vertex of v  must be connected to p in G. Thus, the graph G after removal of v is still connected, so that v is not an articulation point.
 
 % Question 2.c
 %------------------------------------------------
   \item
-We can compute v.low for all vertices v by starting at the leaves of the tree ${G_\pi}$. We compute v.low as follows:
-v.low = min(v.d, min y.low, min w.d) y∈children(v) backedge(v,w)
-For leaves v, there are no descendants u of v, so this returns either v.d or w.d is there is a back edge (v, w). For vertices v in the tree, if v.low = w.d, then either there is a back edge (v, w), or there is a back edge (u, w) for some descendant u. The last term in the min expression handles the case where (v, w) is a back edge. If u is a descendant of v in ${G_\pi}$, we know that u.d > v.d since u is visited after v in the depth first search. Therefore, if w.d < v.d, we also have w.d < u.d, so we will have set u.low = w.d. The middle term in the min expression therefore handles the case where (u, w) is a back edge for some descendant u. Since we start at the leaves of the tree and work our way up, we will have computed everything we need when computing v.low.
-For each node v, we look at v.d and something related to all the edges leading from v, either tree edges leading to the children or back edges. So, the total running time is linear in the number of edges in G, O(E).
+%We can compute v.low for all vertices v by starting at the leaves of the tree ${G_\pi}$. We compute v.low as follows:
+%v.low = min(v.d, min y.low, min w.d) y∈children(v) backedge(v,w)
+%For leaves v, there are no descendants u of v, so this returns either v.d or w.d is there is a back edge (v, w). For vertices v in the tree, if v.low = w.d, then either there is a back edge (v, w), or there is a back edge (u, w) for some descendant u. The last term in the min expression handles the case where (v, w) is a back edge. If u is a descendant of v in ${G_\pi}$, we know that u.d > v.d since u is visited after v in the depth first search. Therefore, if w.d < v.d, we also have w.d < u.d, so we will have set u.low = w.d. The middle term in the min expression therefore handles the case where (u, w) is a back edge for some descendant u. Since we start at the leaves of the tree and work our way up, we will have computed everything we need when computing v.low.
+%For each node v, we look at v.d and something related to all the edges leading from v, either tree edges leading to the children or back edges. So, the total running time is linear in the number of edges in G, O(E).
+
+We modified DFS algorithm based on the definition of low, this algorithm actually can be used to solve problem 2.(c),2.(d),2.(f)
+v.d means depth of v,v.parent means parent node of v\\
+Init: for each v in V: v.visited=false:\\
+count=0\\
+res=0\\
+\\
+DFS(v)\\
+	v.visited=true\\
+	count=count+1\\
+	v.d=count\\
+	v.low=v.d\\
+	for all vertices w in adjacent to v then: \par
+		\setlength{\parindent} {2em} if w.visited==false then :\par
+			\setlength{\parindent} {4em} DFS(w)\par
+			\setlength{\parindent} {4em} w.low=min(v.low,w.low) $\setminus\setminus$ calcuate low here \par
+		\setlength{\parindent} {2em} else if (v.parent not w and w.d<v.d) then \par
+			\setlength{\parindent} {4em} v.low=min(v.low,w.d)  $\setminus\setminus$or calcuate low here  \par
+		\setlength{\parindent} {2em} end if  \par
+\setlength{\parindent} {0em} end for \par
+count=count+1\\
+The running time of this algorithm is $T = O(|V | + |E|)$. Since the graph is connected ${ |V | \leq |E| + 1 }$ , so $T = O(|E|)$.
 
 % Question 2.d
 %------------------------------------------------
   \item 
-For root,we only need to check if it has more than 1 child based on (b).If root has more than 1 child, it is a articulation point
-O(1) time.\\
-Then for other vertices  use the same algorithm in (c). If s.low >= v.d, which means that subtree rooted at s has no back edge to  the ancestors of v in G,then delete v would disconnect G, because based on (b)  any nonroot vertex v is an articulation point if and only if it has a child s in  ${G_\pi}$ with no back edge to a proper ancestor of v. The algorithm in (c) take O(E) time.
+For root,we only need to check if it has more than 1 child based on 2.(b).If root has more than 1 child, it is a articulation point.This only takes O(1) time.\\
+Then for other vertices  use the same algorithm in 2.(c). If s.low >= v.d, which means that subtree rooted at s has no back edge to  the ancestors of v in G,then delete v would disconnect G, because based on (b)  any nonroot vertex v is an articulation point if and only if it has a child s in  ${G_\pi}$ with no back edge to a proper ancestor of v. The algorithm in 2.(c) take O(E) time.
 So the total time is O(E).
 
 % Question 2.e
@@ -165,18 +186,21 @@ So the total time is O(E).
   \item 
 We prove it from two directions:\\
 (1)if an edge (u, v) is a bridge then it can not lie on a simple cycle .\\
-Prove:Assuming (u,v) is a bridge. After we  remove (u,v),G  will be disconnected, so  then there is no path from u to v .However , if (u,v) is on a simple cycle, then based on the property of cycle, there will be a path like u.x1.x2...xn.v.u,remove edge(u,v) will not affect the other edges in this path, so there still is a path from u to v,which means (u,v) is not a bridge.This is against our assumption. So (u,v) is not on a simple cycle.  
+Proof:Assuming (u,v) is a bridge. After we  remove (u,v),G  will be disconnected, so  then there is no path from u to v .However , if (u,v) is on a simple cycle, then based on the property of cycle, there will be a path like u.x1.x2...xn.v.u,remove edge(u,v) will not affect the other edges in this path, so there still is a path from u to v,which means (u,v) is not a bridge.This is against our assumption. So (u,v) is not on a simple cycle.  
 (2) if an edge (u, v) is not on a simple cycle, then it is a bridge.\\
-Prove: Beacuse if edge (u,v) is not on a simple cycle, there will be only one path from u to v (If there are two paths u.x1.x2...xn.v and  u.v, then u.x1..xn.v.u is a cycle ) Then delete (u,v) would disconnect u,v 
+Proof: Beacuse if edge (u,v) is not on a simple cycle, there will be only one path from u to v (If there are two paths u.x1.x2...xn.v and  u.v, then u.x1..xn.v.u is a cycle ) Then delete (u,v) would disconnect u,v 
 
 
 % Question 2.f
 %------------------------------------------------
-  \item xxxxxxxxxxxxxxxxx
-Use the algorithms and conclusions in (c)  (d)
-
-Any bridge in the graph G must exist in the graph Gπ. Otherwise, assume that (u, v) is a bridge and that we explore u first. Since removing (u, v) disconnects G, the only way to explore v is through the edge (u, v). So, we only need to consider the edges in Gπ as bridges. If there are no simple cycles in the graph that contain the edge (u, v) and we explore u first, then we know that there are no back edges between v and anything else. Also, we know that anything
-in the subtree of v can only have back edges to other nodes in the subtree of v. Therefore, we will have v.low = v.d since v is the first node visited in the subtree rooted at v. Thus, we can look over all the edges of Gπ and see whether v.low = v.d. If so, then we will output that (parent[v]Gπ , v) is a bridge, i.e. that v and its parent in Gπ form a bridge. Computing v.low for all vertices v takes time O(E) as we showed in part (c). Looping over all the edges takes time O(V ) since there are |V | − 1 edges in Gπ . Thus the total time to calculate the bridges in G is O(E).
+  \item 
+Use the algorithms and conclusions in (c)  (d)\\
+ Assume that (u, v) is a bridge and  we visit u first. Since removing (u, v) disconnects G, the only way to access v is through the edge (u, v). So (u,v) must be in ${G_\pi}$ . So any bridges in the graph G must be also in the graph ${G_\pi}$. Now we only need to consider the edges in ${G_\pi}$s as bridges. \\
+%If there are no simple cycles in the graph that contain the edge (u, v) and we reach u first, then we know that there are no back edges between v and anything else. Also, we know that anything
+%in the subtree of v can only have back edges to other nodes in the subtree of v. Therefore, we will have v.low = v.d since v is the
+%first node visited in the subtree rooted at v. Thus, we can look over all the edges of ${G_\pi}$ and see whether v.low = v.d. If so,  (parent[v] , v) is a bridge, i.e. that v and its parent in ${G_\pi}$ form a bridge.\\
+If we found a child vertex v of u whose low[v] > d[u], then removing it will disconnect u and v (based on 2.(d)). That means this edge is a  bridge edge.
+Computing v.low for all vertices v takes time O(E) as we showed in part (c). Go through all the edges and checking use time O(V ) because  there are |V|- 1 edges in ${G_\pi}$ . So the total time to calculate the bridges in G is O(E).
 
 
 % Question 2.g
@@ -225,9 +249,32 @@ in the subtree of v can only have back edges to other nodes in the subtree of v.
       \item cost of DFS on the generated forest, requiring O(E)
       \item cost of labeling bcc of the bridges, requiring O(E)
     \end{itemize}
-    so the total complexity is O(E)
-
-
+    so the total complexity is O(E).
+\\
+Another solution:
+Modify algorithm from 2.(c)\\
+....\\
+s=Stack()\\
+DFS(v)\\
+	v.visited=true\\
+	count=count+1\\
+	v.d=count\\
+	v.low=v.d\\
+	for all vertices w in adjacent to v then: \par
+		\setlength{\parindent} {2em} if w.visited==false then :\par
+			\setlength{\parindent} {4em} s.push((v,w)\par
+			\setlength{\parindent} {4em} DFS(w)\par
+			\setlength{\parindent} {4em}if (w.low>=v.d) then \par
+			\setlength{\parindent} {6em}	s.popAll() $\setminus\setminus$ now all edges in stack s belong to the same biconnected component \par
+			\setlength{\parindent} {4em} end if\par
+			\setlength{\parindent} {4em} w.low=min(v.low,w.low) $\setminus\setminus$ calcuate low here \par
+		\setlength{\parindent} {2em} else if (v.parent not w and w.d<v.d) then \par
+			\setlength{\parindent} {4em}s.push((v.w)) \par
+			\setlength{\parindent} {4em} v.low=min(v.low,w.d)  $\setminus\setminus$or calcuate low here  \par
+		\setlength{\parindent} {2em} end if  \par
+\setlength{\parindent} {0em} end for \par
+...\\
+Run this algorithm takes O(E) time,stack push takes O(E) time and pop takes O(E) time.So the total complexity  is O(E)
 \end{enumerate}
 
 
@@ -240,7 +287,7 @@ in the subtree of v can only have back edges to other nodes in the subtree of v.
 % Question 3.1
 %------------------------------------------------
   \item 
-I think the running time should be ${O(L log L + Ln)}$\\
+%I think the running time should be ${O(L log L + Ln)}$\\
 We reduce the problem to the shortest-path problem:\\
 First we construct a graph with  L vertices, labeled ${v_0,v_1...v_{L-1}}$.
 For a vertex ${v_x}$,we perform the following process:For  each ${l_i (i=1,2...n)}$,calculate ${(x+l_i) mod L }$,say ${y}$
@@ -252,7 +299,7 @@ ${ 5+l_2=5+3 \equiv 1 mod 7 }$ ,so there is an edge from ${v_5}$  to ${ v_1}$ wi
 This problem is converted to find the shortest path from ${v_0 }$  to  ${v_0 }$.\\
 Then,we add a anthor node ${v_L}$,serve as the "mirror" vertex  of ${v_0}$,which means ${v_L}$ connects to the same vertices
 as ${v_0}$,so this problem is converted to find the shortest path from ${v_0 }$  to  ${v_L}$.\\
-Then we use Dijkstra's algorithm.The graph has L + 1 vertices and at most (L + 1)n edges; constructing it takes O(Ln) time. The cost of running Dijkstra's algorithm on the graph is ${O(L log L + Ln)}$, hence the total running time is also ${O(L log L + Ln)}$.
+Then we use Dijkstra's algorithm.The graph has L + 1 vertices and at most (L + 1)n edges; constructing it takes O(Ln) time. The cost of running Dijkstra's algorithm on the graph is ${O(L log L + Ln)}$, So the running time is also ${O(L log L + Ln) < O(nLLogL)}$. So we can say the total running time is ${O(nLLogL)}$
 
 \end{enumerate}
 
@@ -274,10 +321,10 @@ Then we use Dijkstra's algorithm.The graph has L + 1 vertices and at most (L + 1
 %\setlength{\parindent}{0em} return G, which is a minimum spanning tree\par
 In the graph ${G }$,use BFS until find a cycle,then delete the heaviest edge on this cycle.
 For each 'delete' operation,we get a new Graph ${G_i}$ and we say the original graph ${G}$ is ${G_0}$.\\
-so ${G_i }$ is still connected and has the same spanning tree with ${G_i -1}$,and   but ${E(G_i)=E(G_i-1)-1 (i=1,2..)}$ \\(For any cycle C in the graph, if the weight of an edge e of C is larger than the weights of all other edges of C, then this edge cannot belong to an MST).
+So ${G_i }$ is still connected and has the same spanning tree with ${G_i -1}$,and   but ${E(G_i)=E(G_{i-1})-1 (i=1,2..)}$ \\(For any cycle C in the graph, if the weight of an edge e of C is larger than the weights of all other edges of C, then this edge cannot belong to an MST).
 Repeat same process 8 times (total 9 times),the ${G_0}$ become a connected graph ${G_9}$ .${G_9}$ has at most  n-1 edges and the same spanning tree as ${G_0}$.
 In fact,${G_9}$ is connected , has n vertices and n-1 edges,so ${G_9}$ is a tree.From previous process,we know ${G_9}$ is also the minimum spanning tree of ${G_0=G}$.\\
-BFS and find heaviest edge take O(V+E)=O((n+8)+n) $\approx$ O(n) time. 
+BFS and find heaviest edge take O(V+E)=O((n+8)+n) $ =$ O(n) time. 
 
 \end{enumerate}
 
