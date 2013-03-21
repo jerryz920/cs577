@@ -1,0 +1,265 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Short Sectioned Assignment
+% LaTeX Template
+% Version 1.0 (5/5/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Frits Wenneker (http://www.howtotex.com)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[paper=a4, fontsize=11pt]{scrartcl} % A4 paper and 11pt font size
+
+\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+\usepackage{fourier} % Use the Adobe Utopia font for the document - comment this line to return to the LaTeX default
+\usepackage[english]{babel} % English language/hyphenation
+\usepackage{amsmath}
+\usepackage{amsfonts,amsthm} % Math packages
+\usepackage{indentfirst}
+\usepackage[top=0.8in, bottom=1in, left=0.75in, right=0.75in]{geometry}
+\usepackage{listings}
+\usepackage{courier} % Required for the courier font
+\usepackage{inconsolata} % Required for inconsolata fonts
+\usepackage{enumitem} % Used for the enumerate index
+\usepackage{tikz} % Used for recursion tree
+
+\usepackage{lipsum} % Used for inserting dummy 'Lorem ipsum' text into the template
+\usepackage{setspace}
+
+\usepackage{sectsty} % Allows customizing section commands
+\allsectionsfont{\normalfont\scshape} % Make all sections centered, the default font and small caps
+
+\usepackage{fancyhdr} % Custom headers and footers
+\pagestyle{fancy} % Makes all pages in the document conform to the custom headers and footers
+\fancyhead{} % No page header - if you want one, create it in the same way as the footers below
+\fancyfoot[L]{} % Empty left footer
+\fancyfoot[R]{} % Empty center footer
+\fancyfoot[C]{\thepage} % Page numbering for right footer
+\renewcommand{\headrulewidth}{0pt} % Remove header underlines
+\renewcommand{\footrulewidth}{0pt} % Remove footer underlines
+\setlength{\headheight}{13.6pt} % Customize the height of the header
+\setlength{\footskip}{20pt} % Customize the height of the header
+
+\renewcommand*{\familydefault}{\rmdefault} %fonts setting
+\newcommand{\Rn}[1]{\uppercase\expandafter{\romannumeral #1\relax}}
+
+\numberwithin{equation}{section} % Number equations within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{figure}{section} % Number figures within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{table}{section} % Number tables within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+
+%\setlength\parindent{0pt} % Removes all indentation from paragraphs - comment this line for an assignment with lots of text
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} % Create horizontal rule command with 1 argument of height
+
+\title{	
+\normalfont \normalsize 
+\textsc{University Wisconsin Madison, Computer Science Department} \\ [25pt] % Your university, school and/or department name(s)
+\horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
+\huge CS577 Assignment 1\\ % The assignment title
+\horrule{2pt} \\[0.5cm] % Thick bottom horizontal rule
+}
+
+\author{Lei Kang, Liang Wang, Yan Zhai} % Your name
+
+\date{\normalsize\today} % Today's date or a custom date
+
+\begin{document}
+
+\maketitle % Print the title
+
+\singlespacing
+\newdimen\origiwspc%
+\newdimen\origiwstr%
+\origiwspc=\fontdimen2\font% original inter word space
+\origiwstr=\fontdimen2\font
+
+\fontdimen2\font=0.8ex
+
+%----------------------------------------------------------------------------------------
+%	PROBLEM 1
+%----------------------------------------------------------------------------------------
+\section*{Problem 1}
+
+\begin{enumerate}[label={1.\arabic*}]
+% Question 1.1
+%------------------------------------------------
+  \item The answer is $\Theta(NlogN)$\\
+    Proof:
+    \begin{itemize}
+      \item $f(x)=log x$ is monotonic increase on $[1,\infty]$, so:
+	\begin{align*}
+	  \int^{n}_{n-1}log x\,dx \leq\,log n\,\leq \int^{n+1}_{n}log x\,dx
+	\end{align*}
+
+      \item using integration by parts formula, we have:
+	\begin{align*}
+	  \int^{n}_{1}log x\,dx = n log n + O(n log n)
+	\end{align*}
+
+      \item $f(n) \in O(n log n)$, because:
+	\begin{align*}
+	  f(n) = \sum_{i=1}^{n}log\,i 
+	       \leq \sum_{i=2}^{n}\int^{i+1}_{i} log x\,dx
+	       = \int^{n+1}_{2}log x\,dx
+	       = O(n log n)
+      	\end{align*}
+      \item $f(n) \in \Omega(n log n)$, because:
+	\begin{align*}
+	  f(n) = \sum_{i=2}^{n}log\,i
+	       \geq \sum_{i=2}^{n}\int^{i}_{i-1} log x\,dx
+	       = \int^{n}_{1}log x\,dx
+	       = \Omega(n log n)
+      	\end{align*}
+      \item combined above points, so $f(n) \in \Theta(n log n)$
+    \end{itemize}
+
+% Question 1.2
+%------------------------------------------------
+  \item use Stirling approximation and logarithm property, we have:
+    \begin{align*}
+      f_8(n) < f_4(n) < f_3(n) < f_7(n) < f_1(n) < f_5(n) < f_2(n) < f_6(n)
+    \end{align*}
+
+\end{enumerate}
+
+
+%----------------------------------------------------------------------------------------
+%	PROBLEM 2
+%----------------------------------------------------------------------------------------
+\section*{Problem 2}
+
+\begin{enumerate}[label={2.(\alph*)}]
+% Question 2.a
+%------------------------------------------------
+  \item We have following definitions:
+    \begin{align*}
+      & T_1(n) = O(n) + T_1(\frac{3n}{4}) + T_1(\frac{n}{4}) & (\Rn{1}) \\
+      & T_2(n) = 2T_2(n-1) + O(1) & (\Rn{2}) \\
+      & T_3(n) = T_3((1-\epsilon)n) + O(n^2) & (\Rn{3})  \\
+      & T_4(n) = \sqrt{n}T_4(\sqrt{n}) + O(n) & (\Rn{4}) 
+    \end{align*}
+
+% Question 2.b
+%------------------------------------------------
+  \item 
+    \begin{enumerate}[label={\roman*.}]
+      \item Using recursion tree method to expand the expression, we could know
+	that at each level of the tree, it would require $h(n) \in O(n)$ time to
+	process. Although the tree is not a full binary tree, we could infer its size
+	should be between a full binary tree with height $log_4n$ and
+	$log_\frac{4}{3}n$. So we have following inequality:
+	\begin{align*}
+	  h(n) \times log_4n \leq T_1(n) \leq h(n) \times log_\frac{4}{3}n
+	\end{align*}
+	The lower bound and upper bound differs only in constant coefficient, thus:
+	\begin{align*}
+	  T_1(n) \in O(h(n) logn) \in O(n log n)
+	\end{align*}
+
+      \item This simple equation could be recursively expanded as:
+	\begin{align*}
+	  T_2(n) = \sum_{i=2}^{n} O(2^i) = 2^{(n+1)}-2 = O(2^n)
+	\end{align*}
+
+      \item According to master theorem, since the coefficient of subproblem is 1,
+	we could directly infer that:
+	\begin{align*}
+	  T_3(n) = O(n^2)
+	\end{align*}
+
+      \item Again use the recursion tree to expand the $T_4(n)$, we will get a
+	full tree of height $log_2log_2n$, and at each level, we need $\sqrt{n}
+	\times O(\sqrt{n}) = O(n)$ to process. So we could easily calculate:
+	\begin{align*}
+	  T_4(n) = log_2log_2n \times O(n) = O(n log_2log_2n)
+	\end{align*}
+
+    \end{enumerate}
+
+% Question 2.c
+%------------------------------------------------
+  \item $T_4(n) < T_1(n) < T_3(n) < T_2(n)$
+
+\end{enumerate}
+
+
+%----------------------------------------------------------------------------------------
+%	PROBLEM 3
+%----------------------------------------------------------------------------------------
+\section*{Problem 3}
+%------------------------------------------------
+\begin{enumerate}[label={3.\arabic*}]
+% Question 3.1
+%------------------------------------------------
+  \item when $b=0$, function returns at first 'if' branch, so it means $a^0=1$, which is apparently true.
+
+% Question 3.2
+%------------------------------------------------
+  \item this inductive base is not as expressive as its alternative form: for $b \leq b^*$, the algorithm works. The proof contains two part:
+    \begin{itemize}
+      \item When $b+1$ is an odd number, \textit{fastExp}$(a,b+1)=a\times$\textit{fastExp}$(a,b)$. Use the inductive base, we have got \textit{fastExp}$(a,b+1) = a^{b+1}$
+      \item When $b+1$ is an even number, \textit{fastExp}$(a,b+1)=$\textit{fastExp}$(a, \frac{b+1}{2})^2= (a^{\frac{b+1}{2}})^2=a^{b+1}$ 
+    \end{itemize}
+    Now using the induction, we have concluded \textit{fastExp} works for any $n \in \mathbb{N}$
+
+\end{enumerate}
+
+%----------------------------------------------------------------------------------------
+%	PROBLEM 4
+%----------------------------------------------------------------------------------------
+\section*{Problem 4}
+%----------------------------------------------------------------------------------------
+\begin{enumerate}[label={4.\arabic*}]
+% Question 4.1
+%------------------------------------------------
+  \item one possible solution is:
+    \begin{align*}
+      & f(n) = (N-1)!, \;\;n \in [(N-1)!, N!),\;\;N \in \mathbb{N}\\
+      & g(n) = \frac{n}{2}
+    \end{align*}
+    It's not hard to see that $g(N! + 1) < f(N! + 1)$ and $g(3N!) > f(3N!)$ when $N$ is large enough, thus
+    $f(n) \notin O(g(n))$ and $g(n) \notin O(f(n))$.
+
+% Question 4.2
+%------------------------------------------------
+  \item it suffices to show that for some pair of functions, such $h$ does not exist.\\
+    Let $f_1,f_2$ be $f,g$ we defined above. If there is a $h$ so that 
+    \begin{align*}
+      & f_1(n) \in O(h(n)) \\
+      & f_2(n) \in O(h(n)) \\
+      & h(n) \in O(f_i(n)), i \in {1,2}
+    \end{align*}
+    assume $i$ is $1$, then $f_2(n) \in O(h(n)) \in O(O(f_1(n))) \in O(f_1(n))$. But this
+    contradicts the fact $f(n) \notin O(g(n))$ and $g(n) \notin O(f(n))$.
+
+% Question 4.3
+%------------------------------------------------
+  \item for any finite set of such functions:
+    \begin{align*}
+      &\text{if:} h(n)= \sum^{k}_{i=1}f_i(n), \\
+      &\quad \text{then for any valid j}\;\; f_j(n) \in O(f_j(n)) \in O(\sum^{k}_{i=1}f_i(n)) \in O(h(n)) \\
+    \end{align*}
+    and for any $h'$ satisfies condition(1), we have:
+    \begin{align*}
+      f_i(n) \in O(h'(n)) & \rightarrow h(n) \in \sum^{k}_{i=1}O(h'(n)) \\
+			  & \rightarrow h(n) \in O(kh'(n))\\
+     			  & \xrightarrow{\text{$k$ is finite constant}} h(n) \in O(h'(n))\\
+    \end{align*}
+    so $h(n)$ is what we are looking for.
+\end{enumerate}
+
+\end{document}
