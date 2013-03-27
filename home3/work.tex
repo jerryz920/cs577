@@ -33,6 +33,8 @@
 \usepackage{enumitem} % Used for the enumerate index
 \usepackage{tikz} % Used for recursion tree
 
+
+
 \usepackage{lipsum} % Used for inserting dummy 'Lorem ipsum' text into the template
 \usepackage{setspace}
 
@@ -63,17 +65,24 @@
 %	TITLE SECTION
 %----------------------------------------------------------------------------------------
 
+%==========================================%
+\newcommand{\nop}[1]{}
+\usepackage{amsthm}
+%===================================================$%
+
+
+
 \newcommand{\horrule}[1]{\rule{\linewidth}{#1}} % Create horizontal rule command with 1 argument of height
 
 \title{	
 \normalfont \normalsize 
 \textsc{University Wisconsin Madison, Computer Science Department} \\ [25pt] % Your university, school and/or department name(s)
 \horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
-\huge CS577 Assignment 1\\ % The assignment title
+\huge CS577 Assignment 3\\ % The assignment title
 \horrule{2pt} \\[0.5cm] % Thick bottom horizontal rule
 }
 
-\author{Lei Kang, Liang Wang, Yan Zhai} % Your name
+\author{Liang Wang, Yan Zhai, Lei Kang} % Your name
 
 \date{\normalsize\today} % Today's date or a custom date
 
@@ -92,7 +101,54 @@
 %----------------------------------------------------------------------------------------
 %	PROBLEM 1
 %----------------------------------------------------------------------------------------
-\section*{Problem 1}
+\section*{Greedy Algorithms}
+
+\subsection*{Problem 1}
+
+Given a set of $n$ jobs with a processing time $t_i$ and a weight $w_i$ for each job. We want to minimize the weighted sum of the completions times, $\sum_{i=1}^{n} {w_iC_i}$. We do the followings,
+
+we get the value of weight over time by $\frac{w_i}{t_i}$, where $1 \leq i \leq n$. To select one job each time, we select job $j$ with the largest $\frac{w_j}{t_j}$, which means for all $i$ in the job list, we have $\frac{w_j}{t_j} \geq \frac{w_i}{t_i}$, and recursively do this until all the jobs are done. This simple algorithm can lead to an optimized solution to this problem.
+
+\begin{proof}
+
+We prove the correctness of our algorithm by exchange argument. To do this, let's suppose that there is an optimal solution $O$ that differs from our solution $S$. In other words, $S$ consists of the weight to time fraction $\frac{w_i}{t_i}$ sorted in non-increasing order. So this optimal solution $O$ must contain an inversion-that is, there must exist two neighbouring jobs $i$ and $j$ such that the $\frac{w_i}{t_i} < \frac{w_j}{t_j}$.
+
+We claim that by exchanging these two purchases, we can strictly improve our optimal solution, which contradicts the assumption that $O$ was optimal. 
+
+Let us assume the previous time cost until job $i$ is $t_x$ and the weighted sum is $N_x$. So, the weighted sum of the optimal solution is $N_O = N_x + (t_i + t_x) * w_i + (t_i + t_j + t_x) * w_j$, and that of the exchanged algorithm is $N_S = N_x + (t_j + t_x) * w_j + (t_i + t_j + t_x) * w_i$. 
+
+To compare if the exchanged version is better or not, we have $N_S - N_O = t_j * w_i - t_i * w_j < 0$, which shows that the exchanged version has a smaller weighted sum and so is a better solution. 
+
+This concludes the proof of correctness. The running time of the algorithm is $O(nlogn)$, since the sorting takes that much time and the rest (outputting) is leaner. So the overall running time is $O(nlogn)$
+
+\end{proof}
+
+%----------------------------------------------------------------------------------------
+%	PROBLEM 2
+%----------------------------------------------------------------------------------------
+
+\subsection*{Problem 2}
+
+Given a connected graph $G = (V, E)$. Each each $e$ has a time varying edge cost given by function $f_e(t) = a_e * t^2 + b_e * t + c_e$, where $a_e > 0$. We want to get the minimum spanning tree at unknown time $t$. Let $m$ and $n$ represents the number of edges and the number of nodes, respectively.
+
+Suppose we get a spanning tree with $n-1$ edges, then the sum of the weights is $\sum_{i=1}^{n-1} {(a_it^2 + b_it + c_i)}$
+The minimum value of this sum when $t = -2*\frac{\sum_{i=1}^{n-1}{b}}{\sum_{i=1}^{n-1}{a}}$ if $\sum_{i=1}^{n-1}{b} < 0$ or $t = 0$ if $\sum_{i=1}^{n-1}{b} \geq 0$.
+
+Now we discuss how to get the $n-1$ edges which has the minimum cost among all the edges. For a given time point, e.g., $t_0$, we can easily get the top $n-1$ edges by applying Prim's Algorithm. The real question is when any one of the edges among the top $n-1$ edges will be exchanged with any other edges during the change of time $t$. It only happens when the weight of one edge in the top $n-1$ edges is larger than that of any one edge among the rest. In other words, there is an intersection on these two curves of changing weight. There are totally $\frac{m(m-1)}{2}$ intersections, for each interval among these cross points, we calculate the minimum spanning tree correspondingly, and find the overall minimum weight sum among $\frac{m(m-1)}{2}$ intervals. 
+
+%----------------------------------------------------------------------------------------
+%	PROBLEM 3
+%----------------------------------------------------------------------------------------
+
+\subsection*{Problem 3}
+
+
+
+\section*{Dynamic Programming}
+
+
+
+\nop{
 
 \begin{enumerate}[label={1.\arabic*}]
 % Question 1.1
@@ -261,5 +317,7 @@
     \end{align*}
     so $h(n)$ is what we are looking for.
 \end{enumerate}
+
+}
 
 \end{document}
