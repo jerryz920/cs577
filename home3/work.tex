@@ -144,180 +144,46 @@ Now we discuss how to get the $n-1$ edges which has the minimum cost among all t
 
 
 
+Given $\rho \in [0, 1]$, we want to find a set $I \subseteq \{1,...,n\}$ of size $n-k$ such that $\frac{\sum_{i \in I}{s_i}}{\sum_{i \in I}{m_i}} \geq \rho$, or we want to ensure the selected set after dropping is fulfil $\sum_{i \in I}(s_i - \rho * m_i) \geq 0$. 
+
+
+For each assignment score, with the changes of $\rho$ values, we can get a curve by $y = s_i - \rho * m_i$. There will be $O(n^2)$ number of cross points, and each point is a different $\rho$ value.
+We get all the values into a vector $P$. We sort the vector in $O(n^2logn)$ time. For each value in vector $P$ (or we can do binary search in vector $P$ in $O(logn)$), we sort all the assignment scores in ascending order according to the value of $s_i - \rho * m_i$, if the top $n-k$ values is not smaller than $0$, then we get the final $n-k$ assignment scores. 
+
+\begin{proof}
+
+The essential thing here is that the vector $P$ contains all possible $\rho$ values we need. Note that we only need the top $n-k$ values, the top $n-k$ assignments will be changed only when one curve represented by $y = s_i - \rho * m_i$ in the selected assignment result set goes below another curve that has not been selected yet. Therefore, the vector $P$ contains all the intervals that the top $n-k$ values would be possibly swapped out by any of the rest $k$ values. 
+
+For a given $\rho$, we can find if it meets our requirements by $O(nlogn)$. There are $n^2$ possible $\rho$ values, and we do binary search. it is $n(log^2n)$. To find all possible $\rho$, we find all intersection points by $y = s - m * \rho$, so there are $O(n^2)$ points, we sort it in $O(n^2logn)$. So, the time complexity is $O(n^2logn)$.
+
+
+\end{proof}
+
 \section*{Dynamic Programming}
 
+%----------------------------------------------------------------------------------------
+%	PROBLEM 1
+%----------------------------------------------------------------------------------------
+
+\subsection*{Problem 1}
 
 
-\nop{
 
-\begin{enumerate}[label={1.\arabic*}]
-% Question 1.1
-%------------------------------------------------
-  \item The answer is $\Theta(NlogN)$\\
-    Proof:
-    \begin{itemize}
-      \item $f(x)=log x$ is monotonic increase on $[1,\infty]$, so:
-	\begin{align*}
-	  \int^{n}_{n-1}log x\,dx \leq\,log n\,\leq \int^{n+1}_{n}log x\,dx
-	\end{align*}
+Let $r_i$ denotes the number of leftover trucks in month $i$, where $0 \leq r_i \leq S$ and $0 \leq i \leq n$, and $OPT(i, r_i)$ denotes the value of the optimal solution on month $i$ when there are $r_i$ leftover trucks. So $OPT(0, r_i) = 0$ a the start, and the problem we want to address is $OPT(n, 0)$.
 
-      \item using integration by parts formula, we have:
-	\begin{align*}
-	  \int^{n}_{1}log x\,dx = n log n + O(n log n)
-	\end{align*}
+In the first month, we need to order trucks anyway, the number of ordered trucks can be calculated by $d_i + r_i$, and the cost is $K + C*r_i$. 
 
-      \item $f(n) \in O(n log n)$, because:
-	\begin{align*}
-	  f(n) = \sum_{i=1}^{n}log\,i 
-	       \leq \sum_{i=2}^{n}\int^{i+1}_{i} log x\,dx
-	       = \int^{n+1}_{2}log x\,dx
-	       = O(n log n)
-      	\end{align*}
-      \item $f(n) \in \Omega(n log n)$, because:
-	\begin{align*}
-	  f(n) = \sum_{i=2}^{n}log\,i
-	       \geq \sum_{i=2}^{n}\int^{i}_{i-1} log x\,dx
-	       = \int^{n}_{1}log x\,dx
-	       = \Omega(n log n)
-      	\end{align*}
-      \item combined above points, so $f(n) \in \Theta(n log n)$
-    \end{itemize}
+To get the solution, the sub problem we want to solve is $OPT(i, r_i) = OPT(i - 1, r_{i - 1}) + x*K + r_i*C$, where $x = 0$ if $r_i + d_i - r_{i-1} = 0$ and $x = 1$ if $r_i + d_i - r_{i-1} > 0$. By iteratively solving the sub problems over each month, we can get the smallest $OPT(n, r_n)$ as the optimal solution. We need to track all possible leftover trucks each month, so the time complexity is $O(nS)$.
 
-% Question 1.2
-%------------------------------------------------
-  \item use Stirling approximation and logarithm property, we have:
-    \begin{align*}
-      f_8(n) < f_4(n) < f_3(n) < f_7(n) < f_1(n) < f_5(n) < f_2(n) < f_6(n)
-    \end{align*}
-
-\end{enumerate}
-
+One optimization we can do on this problem is reduce the number of leftover trucks need to check each month. A simple observation is if we need to re-order next month, when $r_i < d_{i+1}$, then there is no need to store the trucks. 
 
 %----------------------------------------------------------------------------------------
 %	PROBLEM 2
 %----------------------------------------------------------------------------------------
-\section*{Problem 2}
 
-\begin{enumerate}[label={2.(\alph*)}]
-% Question 2.a
-%------------------------------------------------
-  \item We have following definitions:
-    \begin{align*}
-      & T_1(n) = O(n) + T_1(\frac{3n}{4}) + T_1(\frac{n}{4}) & (\Rn{1}) \\
-      & T_2(n) = 2T_2(n-1) + O(1) & (\Rn{2}) \\
-      & T_3(n) = T_3((1-\epsilon)n) + O(n^2) & (\Rn{3})  \\
-      & T_4(n) = \sqrt{n}T_4(\sqrt{n}) + O(n) & (\Rn{4}) 
-    \end{align*}
-
-% Question 2.b
-%------------------------------------------------
-  \item 
-    \begin{enumerate}[label={\roman*.}]
-      \item Using recursion tree method to expand the expression, we could know
-	that at each level of the tree, it would require $h(n) \in O(n)$ time to
-	process. Although the tree is not a full binary tree, we could infer its size
-	should be between a full binary tree with height $log_4n$ and
-	$log_\frac{4}{3}n$. So we have following inequality:
-	\begin{align*}
-	  h(n) \times log_4n \leq T_1(n) \leq h(n) \times log_\frac{4}{3}n
-	\end{align*}
-	The lower bound and upper bound differs only in constant coefficient, thus:
-	\begin{align*}
-	  T_1(n) \in O(h(n) logn) \in O(n log n)
-	\end{align*}
-
-      \item This simple equation could be recursively expanded as:
-	\begin{align*}
-	  T_2(n) = \sum_{i=2}^{n} O(2^i) = 2^{(n+1)}-2 = O(2^n)
-	\end{align*}
-
-      \item According to master theorem, since the coefficient of subproblem is 1,
-	we could directly infer that:
-	\begin{align*}
-	  T_3(n) = O(n^2)
-	\end{align*}
-
-      \item Again use the recursion tree to expand the $T_4(n)$, we will get a
-	full tree of height $log_2log_2n$, and at each level, we need $\sqrt{n}
-	\times O(\sqrt{n}) = O(n)$ to process. So we could easily calculate:
-	\begin{align*}
-	  T_4(n) = log_2log_2n \times O(n) = O(n log_2log_2n)
-	\end{align*}
-
-    \end{enumerate}
-
-% Question 2.c
-%------------------------------------------------
-  \item $T_4(n) < T_1(n) < T_3(n) < T_2(n)$
-
-\end{enumerate}
+\subsection*{Problem 2}
 
 
-%----------------------------------------------------------------------------------------
-%	PROBLEM 3
-%----------------------------------------------------------------------------------------
-\section*{Problem 3}
-%------------------------------------------------
-\begin{enumerate}[label={3.\arabic*}]
-% Question 3.1
-%------------------------------------------------
-  \item when $b=0$, function returns at first 'if' branch, so it means $a^0=1$, which is apparently true.
 
-% Question 3.2
-%------------------------------------------------
-  \item this inductive base is not as expressive as its alternative form: for $b \leq b^*$, the algorithm works. The proof contains two part:
-    \begin{itemize}
-      \item When $b+1$ is an odd number, \textit{fastExp}$(a,b+1)=a\times$\textit{fastExp}$(a,b)$. Use the inductive base, we have got \textit{fastExp}$(a,b+1) = a^{b+1}$
-      \item When $b+1$ is an even number, \textit{fastExp}$(a,b+1)=$\textit{fastExp}$(a, \frac{b+1}{2})^2= (a^{\frac{b+1}{2}})^2=a^{b+1}$ 
-    \end{itemize}
-    Now using the induction, we have concluded \textit{fastExp} works for any $n \in \mathbb{N}$
-
-\end{enumerate}
-
-%----------------------------------------------------------------------------------------
-%	PROBLEM 4
-%----------------------------------------------------------------------------------------
-\section*{Problem 4}
-%----------------------------------------------------------------------------------------
-\begin{enumerate}[label={4.\arabic*}]
-% Question 4.1
-%------------------------------------------------
-  \item one possible solution is:
-    \begin{align*}
-      & f(n) = (N-1)!, \;\;n \in [(N-1)!, N!),\;\;N \in \mathbb{N}\\
-      & g(n) = \frac{n}{2}
-    \end{align*}
-    It's not hard to see that $g(N! + 1) < f(N! + 1)$ and $g(3N!) > f(3N!)$ when $N$ is large enough, thus
-    $f(n) \notin O(g(n))$ and $g(n) \notin O(f(n))$.
-
-% Question 4.2
-%------------------------------------------------
-  \item it suffices to show that for some pair of functions, such $h$ does not exist.\\
-    Let $f_1,f_2$ be $f,g$ we defined above. If there is a $h$ so that 
-    \begin{align*}
-      & f_1(n) \in O(h(n)) \\
-      & f_2(n) \in O(h(n)) \\
-      & h(n) \in O(f_i(n)), i \in {1,2}
-    \end{align*}
-    assume $i$ is $1$, then $f_2(n) \in O(h(n)) \in O(O(f_1(n))) \in O(f_1(n))$. But this
-    contradicts the fact $f(n) \notin O(g(n))$ and $g(n) \notin O(f(n))$.
-
-% Question 4.3
-%------------------------------------------------
-  \item for any finite set of such functions:
-    \begin{align*}
-      &\text{if:} h(n)= \sum^{k}_{i=1}f_i(n), \\
-      &\quad \text{then for any valid j}\;\; f_j(n) \in O(f_j(n)) \in O(\sum^{k}_{i=1}f_i(n)) \in O(h(n)) \\
-    \end{align*}
-    and for any $h'$ satisfies condition(1), we have:
-    \begin{align*}
-      f_i(n) \in O(h'(n)) & \rightarrow h(n) \in \sum^{k}_{i=1}O(h'(n)) \\
-			  & \rightarrow h(n) \in O(kh'(n))\\
-     			  & \xrightarrow{\text{$k$ is finite constant}} h(n) \in O(h'(n))\\
-    \end{align*}
-    so $h(n)$ is what we are looking for.
-\end{enumerate}
-
-}
 
 \end{document}
