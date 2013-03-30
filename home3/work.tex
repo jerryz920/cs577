@@ -208,7 +208,8 @@ Suppose we have an optimal solution $J$ in which not all jobs are scheduled in i
 \nop{
 Firstly, we sort all the jobs according to their required time $t_i$, such that we can check the order of job $i$. It takes us $O(nlogn)$. 
 }
-Firstly, we sort all the jobs in the order of increasing deadlines $d_i$. For a sub problem, we want to know how long it lefts if we performed $j$ jobs at deadline $i$, and $j \leq i$. We maintain a $n*n$ matrix for this, where each item should be not smaller than $0$, $M(i, j) \geq 0$. The $j$ jobs is the top $j$ jobs that have the minimum required time in all $i$ jobs. So, for each new job we traverse, we either ignore it or add it, the objective is to find the maximum left time for a given number of jobs $j$, and we have $M(i+1, j) = max(d_{i+1} - d_i + M(i, j), d_{i+1} - d_i + M(i, j -1) - t_{i+1})$. The solution we will get at the item $M(n, m) \geq 0$, where $m$ has the largest value. The solution takes $O(n^2)$, as we need to check all possible $j$ value for each deadline. 
+
+Firstly, we sort all the jobs in the order of increasing deadlines $d_i$. For a sub problem, we want to know how long it lefts if we performed $j$ jobs at deadline $i$, and $j \leq i$. We maintain a $n*n$ matrix for this, where each item should be not smaller than $0$, $M(i, j) \geq 0$. The philosophy we use to solve this problem, is for a given number of tasks that can be finished so far, we want the left time is as large as possible. So, for each new job we traverse, we either ignore it or add it, the objective is to find the maximum left time for a given number of jobs $j$, and we have $M(i+1, j) = max(d_{i+1} - d_i + M(i, j), d_{i+1} - d_i + M(i, j -1) - t_{i+1})$. The solution we will get at the item $M(n, m) \geq 0$, where $m$ has the largest value. The solution takes $O(n^2)$, as we need to check all possible $j$ value for each deadline. 
 
 \end{enumerate}
 
