@@ -177,13 +177,40 @@ To get the solution, the sub problem we want to solve is $OPT(i, r_i) = OPT(i - 
 
 One optimization we can do on this problem is reduce the number of leftover trucks need to check each month. A simple observation is if we need to re-order next month, when $r_i < d_{i+1}$, then there is no need to store the trucks. 
 
+To get an solution that is independent of $S$, we need to avoid checking all the possibilities of $r_i$ in each month. To this end, we will not place an order as long as the storage cost is less than the ordering cost, $r_i * C \leq K$, and the number of leftover trucks can meet the requirements of the following month, $r_i \geq d_{i+1}$. Otherwise, we will place an order to meet the requirement of this month. If $r_i+d_i > S$, $OPT(i, r_i) = OPT(i-1, 0) + K$, and if else, $OPT(i, r_i) = min(OPT(i-1, r_i + d_i) + C*(r_i + d_i), OPT(i-1, 0) + K)$.
+In this case, the time complexity is $O(n)$.
+
 %----------------------------------------------------------------------------------------
 %	PROBLEM 2
 %----------------------------------------------------------------------------------------
 
 \subsection*{Problem 2}
 
+As the problem implied, Gerrymandering only happens when the total number of voters of one party is larger than the other. without losing of generality, let's assume party $A$ has larger number of voters. Let $m_{i,A}$ and $m_{i,B}$ denote the number of voters in the $i$ precincts that will vote for party $A$ and $B$, respectively. So we have, each precincts have the same number of total voters and each voter supports one party only, $m_{i,B} + m_{i,A} = m$, and $\sum_{i=1}^n m_{i, A} > \frac{m*n}{2}$.
 
+
+To keep track of all possible allocations when we start to check precinct $i$, we use a big binary matrix $M(i, j, x, y)$ with size $\frac{mn}{2}*\frac{mn}{2}$, where the matrix item is equal $1$ when there are at least $x$ and $y$ voters have been allocated into set $0$ and $1$, respectively, and $j$ precincts have been allocated to set $0$, and it is equal to $0$ otherwise. When we check the next precinct, the matrix item $M(i + 1, j + 1, x + m_{i+1}, y) = 1$ and $M(i + 1, j, x, y + m_{i+1}) = 1$. Our interest is $M(n, \frac{n}{2}, x, y) = 1$ while $ x > \frac{m*n}{4}$ and $ y > \frac{m*n}{4}$. The time complexity to maintain and scan over the big binary matrix is $O(m^2n^2)$.
+
+%----------------------------------------------------------------------------------------
+%	PROBLEM 3
+%----------------------------------------------------------------------------------------
+
+\subsection*{Problem 3}
+
+
+\begin{enumerate}[label={(\alph*)}]
+
+\item
+
+Suppose we have an optimal solution $J$ in which not all jobs are scheduled in increasing order of their deadline. By definition, all jobs in $J$ can meet their deadline. Considering there are two neighbouring jobs in $J$ with two deadlines $d_i$ and $d_{i+1}$, we have $d_i > d_{i+1}$ and $s+t_i < d_i$ and $s+t_i+t_{i+1} < d_{i+1}$, where $s$ is the start time of the first job of these two. By swapping these two jobs, job $i+1$ can meet its deadline as $s+t_{i+1} < d_{i+1}$, and job $i$ can also meet its deadline as $s+t_i+t_{i+1} < d_{i+1} < d_i$. So, for any optimal solution, we can re-order it into an optimal solution in which all jobs are scheduled in increasing order of their deadline. 
+
+\item
+\nop{
+Firstly, we sort all the jobs according to their required time $t_i$, such that we can check the order of job $i$. It takes us $O(nlogn)$. 
+}
+Firstly, we sort all the jobs in the order of increasing deadlines $d_i$. For a sub problem, we want to know how long it lefts if we performed $j$ jobs at deadline $i$, and $j \leq i$. We maintain a $n*n$ matrix for this, where each item should be not smaller than $0$, $M(i, j) \geq 0$. The $j$ jobs is the top $j$ jobs that have the minimum required time in all $i$ jobs. So, for each new job we traverse, we either ignore it or add it, the objective is to find the maximum left time for a given number of jobs $j$, and we have $M(i+1, j) = max(d_{i+1} - d_i + M(i, j), d_{i+1} - d_i + M(i, j -1) - t_{i+1})$. The solution we will get at the item $M(n, m) \geq 0$, where $m$ has the largest value. The solution takes $O(n^2)$, as we need to check all possible $j$ value for each deadline. 
+
+\end{enumerate}
 
 
 \end{document}
