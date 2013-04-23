@@ -1,0 +1,268 @@
+/******************************************************************************
+
+ @File Name : {PROJECT_DIR}/splay.cc
+
+ @Creation Date : 08-04-2013
+
+ @Created By: Zhai Yan, Liang Wang, Lei Kang
+
+ @Purpose : This is a simple implementation of a splay tree.
+
+*******************************************************************************/
+
+
+#include <cstdio>
+#include <cstdlib>
+#include <utility>
+
+
+//
+//TODO:
+//  Here we simplify things: T should only be value type, rather than pointer,
+//  or reference. In future should use standard facilities to make this template
+//  more usable.
+//
+template <typename T>
+class SplayTree {
+
+  private:
+
+    typedef struct SplayNode {
+      SplayNode* parent;
+      SplayNode* left;
+      SplayNode* right;
+      union {
+        T* p;
+        T val;
+      };
+    } SplayNode;
+
+
+  public:
+
+    /*
+     *  Constructors
+     */
+    SplayTree()
+    {
+      root_ = &sentinel;
+    }
+
+    void debug()
+    {
+      dodebug(root, 0);
+    }
+
+    void dodebug(SplayNode* root, int tab)
+    {
+      if (!is_nil(root)) {
+        printf("%*d\n", tab, root->val);
+        debug(root->left, tab + 2);
+        debug(root->right, tab + 2);
+      }
+    }
+
+    /*
+     *  Interfaces
+     */
+    void insert(T&& v) {
+      insert(v);
+    }
+    void insert(T& v)
+    {
+      if (is_nil(root_)) {
+        root_ = new SplayNode{&sentinel, &sentinel, &sentinel, v};
+      } else {
+        auto subtrees = split(v);
+        //
+        //  it's possible here subtrees.second->v == v, so we don't
+        //  need insert a new node, just update.
+        //
+        if (v < subtrees.second->v) {
+          root_ = new SplayNode{&sentinel, subtrees.first, subtrees.right, v};
+          subtrees.first->parent = root_;
+          subtrees.second->parent = root_;
+        } else {
+          root_ = subtrees.second;
+          root_->v = v;
+          subtrees.first->parent = root_;
+        }
+      }
+    }
+
+    void remove(T&& v)
+    {
+    }
+
+    T* find(T&& v)
+    {
+      auto target = bin_find(v);
+      if (is_nil(target.second)) {
+        splay(target.first);
+        return NULL;
+      } else {
+        splay(target.second);
+        return &target.second->val;
+      }
+    }
+
+    bool contains(T&& v)
+    {
+      return find(v) != NULL;
+    }
+
+  private:
+
+    /*
+     *  Inner implementation of splay, insert, and delete
+     */
+
+
+    ////
+    // Zig operation applies when rotating p and its left child
+    //
+    void zig(SplayNode* p)
+    {
+      SplayNode* x = p->left;
+      p->left = x->right;
+      x->right->parent = p;
+      x->right = p;
+      x->parent = p->parent;
+      p->parent = x;
+    }
+
+    ////
+    // Zag operation applies when rotating p and its right child
+    //
+    void zag(SplayNode* p)
+    {
+      SplayNode* x = p->right;
+      p->right = x->left;
+      x->left->parent = p;
+      x->left = p;
+      x->parent = p->parent;
+      p->parent = x;
+    }
+
+    void splay(SplayNode* x)
+    {
+      SplayNode* p = x->parent;
+
+      while (!is_nil(p)) {
+        SplayNode* pp = p->parent;
+        if (is_nil(pp)) {
+          if (p->left == x) {
+            zig(p);
+          } else {
+            zag(p);
+          }
+        } else if (pp->left == p && p->left == x) {
+          zig(pp);
+          zig(p);
+        } else if (pp->left == p && p->right == x) {
+          zag(p);
+          //
+          //  Important: after this x->parent != p
+          //
+          zig(x->parent);
+        } else if (pp->right == p && p->left == x) {
+          zip(p);
+          //
+          //  Important: after this x->parent != p
+          //
+          zag(x->parent);
+        } else {
+          zag(pp);
+          zag(p);
+        }
+        p = x->parent;
+      }
+      //
+      //  now root should point at x.
+      //
+      root_ = x;
+    }
+
+    std::pair<SplayNode*,SplayNode*> bin_find(const T&& v)
+    {
+      sentinel.val = v;
+      SplayNode* cur = root_, par = &sentinel;
+      //
+      // We just require T to implement '<' method, so we
+      // should not write cur->v != v, rather, we rely on
+      // the fact if !(a < b) && !(b < a) then a == b.
+      //
+      while (true) {
+        if (cur->v < v) {
+          par = cur;
+          cur = cur->right;
+        } else if (v < cur->v) {
+          par = cur;
+          cur = cur->left;
+        } else {
+          break;
+        }
+      }
+      return {par, cur};
+    }
+
+    ////
+    //
+    //  Splitting the tree into two subtrees according to v, one contains
+    //  all less-equal nodes, the other contains only large-equal nodes
+    //
+    //  To implement this, we first access v, so that nodes containing v
+    //  or its parent is splayed to the root, then we just make a new root
+    //  node and connect the two sub trees to the head
+    //
+    std::pair<SplayNode*, SplayNode*> split(const T&& v)
+    {
+      auto ins_point = bin_find(v);
+      auto par = std::move(ins_point.first);
+      auto ins = std::move(ins_point.second);
+
+      if (is_nil(ins)) {
+        splay(par);
+      } else {
+        splay(ins);
+      }
+
+      if (root_->val < v) {
+        SplayNode* subright = root_->right;
+        root_->right = &sentinel;
+        return {root_, subright};
+      } else {
+        SplayNode* subleft = root_->left;
+        root_->left = &sentinel;
+        return {subleft, root_};
+      }
+    }
+
+
+    /*
+     *  Utilities
+     */
+    bool is_nil(const SplayNode* n) const
+    {
+      return n == sentinel;
+    }
+
+    SplayNode* root_;
+    SplayNode sentinel = {&sentinel, &sentinel, &sentinel, NULL};
+};
+
+
+//
+//  Test code
+//
+int main()
+{
+  SplayTree<int> t;
+
+  for (int i = 0; i < 10; i++)
+    t.insert(i);
+  t.insert(1);
+  t.debug();
+
+  return 0;
+}
