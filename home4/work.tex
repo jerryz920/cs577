@@ -1,0 +1,350 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Short Sectioned Assignment
+% LaTeX Template
+% Version 1.0 (5/5/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Original author:
+% Frits Wenneker (http://www.howtotex.com)
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+\documentclass[paper=a4, fontsize=11pt]{scrartcl} % A4 paper and 11pt font size
+
+\usepackage[T1]{fontenc} % Use 8-bit encoding that has 256 glyphs
+\usepackage{fourier} % Use the Adobe Utopia font for the document - comment this line to return to the LaTeX default
+\usepackage[english]{babel} % English language/hyphenation
+\usepackage{amsmath}
+\usepackage{amsfonts,amsthm} % Math packages
+\usepackage{indentfirst}
+\usepackage[top=0.8in, bottom=1in, left=0.75in, right=0.75in]{geometry}
+\usepackage{listings}
+\usepackage{courier} % Required for the courier font
+\usepackage{inconsolata} % Required for inconsolata fonts
+\usepackage{enumitem} % Used for the enumerate index
+\usepackage{tikz} % Used for recursion tree
+
+
+
+\usepackage{lipsum} % Used for inserting dummy 'Lorem ipsum' text into the template
+\usepackage{setspace}
+
+\usepackage{sectsty} % Allows customizing section commands
+\allsectionsfont{\normalfont\scshape} % Make all sections centered, the default font and small caps
+
+\usepackage{fancyhdr} % Custom headers and footers
+\pagestyle{fancy} % Makes all pages in the document conform to the custom headers and footers
+\fancyhead{} % No page header - if you want one, create it in the same way as the footers below
+\fancyfoot[L]{} % Empty left footer
+\fancyfoot[R]{} % Empty center footer
+\fancyfoot[C]{\thepage} % Page numbering for right footer
+\renewcommand{\headrulewidth}{0pt} % Remove header underlines
+\renewcommand{\footrulewidth}{0pt} % Remove footer underlines
+\setlength{\headheight}{13.6pt} % Customize the height of the header
+\setlength{\footskip}{20pt} % Customize the height of the header
+
+\renewcommand*{\familydefault}{\rmdefault} %fonts setting
+\newcommand{\Rn}[1]{\uppercase\expandafter{\romannumeral #1\relax}}
+
+\numberwithin{equation}{section} % Number equations within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{figure}{section} % Number figures within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+\numberwithin{table}{section} % Number tables within sections (i.e. 1.1, 1.2, 2.1, 2.2 instead of 1, 2, 3, 4)
+
+%\setlength\parindent{0pt} % Removes all indentation from paragraphs - comment this line for an assignment with lots of text
+
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION
+%----------------------------------------------------------------------------------------
+
+%==========================================%
+\newcommand{\nop}[1]{}
+\usepackage{amsthm}
+%===================================================$%
+
+
+
+\newcommand{\horrule}[1]{\rule{\linewidth}{#1}} % Create horizontal rule command with 1 argument of height
+
+\title{	
+\normalfont \normalsize 
+\textsc{University Wisconsin Madison, Computer Science Department} \\ [25pt] % Your university, school and/or department name(s)
+\horrule{0.5pt} \\[0.4cm] % Thin top horizontal rule
+\huge CS577 Assignment 4\\ % The assignment title
+\horrule{2pt} \\[0.5cm] % Thick bottom horizontal rule
+}
+
+\author{Yan Zhai, Lei Kang, Liang Wang} % Your name
+
+\date{\normalsize\today} % Today's date or a custom date
+
+\begin{document}
+
+\maketitle % Print the title
+
+\singlespacing
+\newdimen\origiwspc%
+\newdimen\origiwstr%
+\origiwspc=\fontdimen2\font% original inter word space
+\origiwstr=\fontdimen2\font
+
+\fontdimen2\font=0.8ex
+
+%----------------------------------------------------------------------------------------
+%	PROBLEM 1
+%----------------------------------------------------------------------------------------
+\section*{Dynamic Programming}
+
+\subsection*{Problem 1}
+%\subsubsection*{\textbf{Analyze}} at a first glance we may try to enumerate the deadline T to find out nodes we could visit. But this would lead up to a pseudo linear algorithm, not strongly polynomial. Observing that the maximum possible number of nodes are bounded by input size, we could change our target to use dynamic programming.
+%
+\subsubsection*{\textbf{Decompose the Problem}} let t[r][v] to be the minimum time required to visit exactly v descendents of r and returns to r, then we can construct it from a set of sub-problems bottom-up:
+\begin{align*}
+	t[r][v] = \min_{\sum_{i=1}^{n_r}{v_i}=v} \sum_{i=1}^{n_r}{cost(v_i, r, c_i)}
+\end{align*}
+Here we have $c_i$ as the ith children of r, $n_r$ and $n_i$ as the number of r and $c_i$'s children. $v_i$ is the number of nodes to visit when going along with $c_i$. The cost function should be specially treated, because when we decide not to visit any nodes along this branch, it does not impose any cost. On the other hand, if we want to visit x nodes inside this branch, actually we need only visit $c_i$ and x-1 descendants. So based on this observation, we have cost defined as:
+\begin{align*}
+	\text{cost}(0,r,c) &= 0 \\
+	\text{cost}(v,r,c) &= t[c][v-1] + 2 \times e[r][c];
+\end{align*}
+Each sub problems are independent from each other, so as long as the sub problems are optimal, the constructed problem is also optimal.
+
+\subsubsection*{\textbf{Polynomial Construct}} in above transition function, we may need to
+calculate at most $ {v + n - 1\choose n - 1} $ cases. This would become
+non-polynomial. But observe that we could make it an alternative knapsack
+problem: given N groups, each group contain several item with different weight
+and cost, and a knapsack with capacity V, now it requires us to pick exactly
+one item from each group to fill the knapsack, and compute the minimum possible
+cost. This problem can be solved by dynamic programming in O(NVm), here m is
+the max items count in each group:
+\lstinputlisting{knapsack.c}
+
+\subsubsection*{\textbf{Combine Them All}} Back to original problem, constructing the
+answer from subproblems is just a group-knapsack problem: each of the child
+$c_i$ represents a group, with $n_i$ items. Here $n_i$ is the total number of
+descendants of $c_i$. Within this group, there is item of weight 0,1,..$n_i +
+1$, with the cost to be cost(0, r, $c_i$), cost(1,r,$c_i$)...
+cost($n_i+1$,r,$c_i$). The capacity of the knapsack size V is at most tree node
+number n-1. So we could answer a set of query: "how much time it takes to visit
+1,2,3,...n-1 nodes in this tree?", by computing t[root][1], t[root][2],
+t[root][3]..., t[root][n-1]:
+
+\lstinputlisting{tree.c}
+
+When finish running the above code, the answer is the maximum n such that
+t[root][n] <= T;
+
+\subsubsection*{\textbf{Proof of Strongly Polynomial}} The algorithm `search` runs for
+each of the nodes for only once. Besides, each of the node requires a three
+level loop to work out. The direct children (group count), the capacity,
+and the descendants (the item count within one group) are all bounded by
+the number of the total node number n. So it requires O($n^3$) time for
+each node, and O($n^4$) time for the search algorithm, plus a O($n$) query
+time for maximum nodes to visit, this algorithm is apparently strongly
+polynomial.
+
+
+%----------------------------------------------------------------------------------------
+%	PROBLEM 2
+%----------------------------------------------------------------------------------------
+
+\section*{Network Flow}
+\subsection*{Problem 2}
+\subsubsection*{\textbf{Modeling the Problem}} This problem can be solved efficiently using minimum
+cut property. We could construct a s-t flow graph as following:
+\begin{itemize}
+  \item each product is a internal node
+  \item for each internal node i, add an arch (s,i), with capacity $p^A_t$
+  \item for each internal node i, add an arch (i,t), with capacity $p^B_t$
+  \item for each pair (i,j), $i \ne j$, add undirected edge (i,j), with
+  capacity equal to the incompatible cost(i,j)
+\end{itemize}
+We could then prove: for this graph, a purchase plan equals to the capacity of
+a s-t cut, and vice versa. So compute the minimum cut can yield the desired
+minimum cost. Note that a purchase plan can be too large to be generated from
+the source, but this means it's even worse than buying everything from A
+company, so we don't need to consider this kind of plan.
+
+\subsubsection*{\textbf{Cuts and Plans}} 
+We first show that a plan can be translate to a s-t cut set. For a plan
+buying ($A_{i1},A_{i2}..A_{im}$) and ($B_{j1},B_{j2}...B_{jk}$), we could
+construct the cut as following steps:
+\begin{itemize}
+\item initialize C=\{\}
+\item partition V to S $\cup$ T such that S=\{s,j1,j2..jk\} and T=\{t,i1,i2,...im\}
+\item add arches (s,i1),(s,i2),...(s,im), and (t,j1),(t,j2),...(t,jm) to C as
+the base prices for the products.
+\item add undirected edges (j1,i1),(j1,i2),...(jk,im) to C as the incompatible
+cost. Note that the cut capacity counts only from S to T, so we won't duplicate
+counting the costs.
+\item Now all edges in C form the cost of the purchase plan, and it is obvious
+it just corresponds to the cut-set of S-T.
+\end{itemize}
+
+On the other hand, for any s-t cut, just let any nodes in S part stands for buying
+products from B, and T part stands for buying products from A, then it is quite
+trivial to show that it's a valid purchase plan. Now we just need to compute the minimum cut set to make the purchase. 
+
+\subsubsection*{\textbf{Algorithm}}
+Now that we know the relationship between plans and cut-sets, the algorithm is
+straightforward:
+\begin{enumerate}
+\item compute the maximum flow using the Edmonds Karp algorithm.
+\item on the maximum flow residual graph, traverse from source node s,
+marking all the nodes can reach
+\item collecting all edges e in original graph, such that one node of
+e is marked, and the other is not.
+\item this produces the minimum cut set, also the best purchase plan.
+\end{enumerate}
+
+One obvious but necessary thing to note is that all the edges inside minimum cut
+set would be full used, or the compute flow is not maximum since residual network
+still can be augmented along this non-saturated edge.
+
+The step to compute maximum flow is Polynomial. If use Edmonds Karp's, it will
+terminate in O($NE^2$). The BFS step to compute the minimum cut is linear to
+node and edge count, and the last edge collecting phase can run in O(E), too.
+So the total algorithm work out in polynomial time.
+
+%----------------------------------------------------------------------------------------
+%	PROBLEM 3
+%----------------------------------------------------------------------------------------
+\subsection*{Problem 3}
+
+This is actually the König's theorem. We first give out the algorithm to compute 
+the minimum vertex cover from the maximum match in bipartite graph, then prove it
+steps by step.
+
+\subsubsection*{\textbf{Construction}}
+Assume we have a bipartite G(V,E)=A $\cup$ B, and a maximum matching M is already
+computed. Then the steps to get minimum vertex cover can be as following:
+\begin{enumerate}
+\item let T to be the set containing all nodes not matched by M in B
+\item add all nodes n to T reachable from alternating paths:
+\begin{itemize}
+	\item n $\in$ A, and n can be reached from T using edges in E/M
+	\item n $\in$ B, and n can be reached from T using edges in M
+\end{itemize}
+\item the minimum vertex set C=(A $\cap$ T) $\cup$ (B/T) is then the minimum vertex
+cover.
+\end{enumerate}
+
+\subsubsection*{\textbf{Proof}}
+We now prove the vertex set is the minimum vertex cover, and it's equal to the size of
+maximum matching. In fact, we just need to show this vertex set is equal to the size
+of maximum matching and it's a vertex cover. This is because all the edges in
+the matching are disjointed, so that a vertex cover should be at least as large
+as the maximum matching.
+
+First of all, it's worthwhile to note that any nodes in A $\cap$ T must be
+matched by M. Or because we start from an unmatched node, it would be a
+complete augment path, thus conflict with the fact M is a maximum matching (removing
+all the matched edges from M and adding all unmatched edges to M yielding larger
+matching)
+
+Then we show |C| = |M|. For the proof we need to confirm:
+\begin{enumerate}
+\item all nodes in C are nodes matched by M
+\item Any edge of M incidents on exactly one node in C
+\end{enumerate}
+
+The first point is quite straightforward since we only select matched nodes in
+A, and the unmatched nodes in B are initially included in T. The second point
+can be proved by contradiction: if an edge (u,v) $\in$ M, and neither u or v belongs to C, then
+without losing generality, we assume u $\in$ A, and v $\in$ B, so that u $\notin$ A $\cap$ T,
+and v $\in$ T. According to our selection rule, we only add unmatched nodes from B, and matched
+nodes which already have their counterparts in T. But u is not in T, leading to conflict. So
+any edge of M has at least one node in C. For the same reason, there is no edge (u,v) $\in$
+M and both u and v $\in$ C, since any nodes in A $\cap$ T have their counterparts in T, and
+any nodes in B/T can not have their counterparts in A $\cap$ T. These two points show
+that |C| = |M|.
+
+The next step is to prove C is a vertex cover. There can only be four types of
+edges (u,v), assume u $\in$ A, and v $\in$ B:
+\begin{enumerate}
+\item u $\in$ A $\cap$ T, and v $\in$ B/T
+\item u $\in$ A $\cap$ T, and v $\in$ T
+\item u $\notin$ A $\cap$ T, and v $\in$ B/T
+\item u $\notin$ A $\cap$ T, and v $\in$ T
+\end{enumerate}
+
+But the fourth type of edge actually does not exist: if it belongs to E/M, then
+according to our first selection rule, it must be reached from some nodes in T;
+But if it belongs to M, then we have shown every matching edge incidents on
+exactly one node in C. Thus any of the edges would have at least one node in C,
+and we have completed the proof.
+
+
+%----------------------------------------------------------------------------------------
+%	PROBLEM 4
+%----------------------------------------------------------------------------------------
+
+\subsection*{Problem 4}
+\subsubsection*{\textbf{Model the Problem}}
+We first build a graph such that:
+\begin{itemize}
+\item any box is a node
+\item if a box i could be nested in another box j, add a directed arch (i,j)
+\end{itemize}
+
+On this graph, it's easy to see that for any placement strategies, the boxes
+still visible is actually a path with finite length. And a good property of
+these path sets is that any nodes appear in exactly one path (Or it means a
+box is nested in two final boxes, obviousely conflict with problem statements).
+The minimum number of boxes is equal to the minimum size of path cover.
+
+We now give the new definition of the problem: given a graph G=(V,E), compute
+the minimum number of path set such that any node in V appear on exactly one
+path. Note the graph we built above is a DAG, so the algorithm can be
+simplified a lot.
+
+\subsubsection*{\textbf{Algorithm}}
+To solve the minimum path cover problem, we could translate it into a bipartite
+graph G'=(X $\cup$ Y, E'):
+\begin{enumerate}
+\item for any node v $\in$ V, add v to X, and add a new node v' to Y
+\item for any arch (u,v), add arch (u, v') to E'
+\end{enumerate}
+The number of minimum path cover equals to |V| - m, where m is the size of
+maximum matching of G'. The construction of the minimum path cover is easy:
+starting from |V| stand alone points, for each edge in the matching, connecting
+the two nodes. We will prove its correctness in next part.
+
+The algorithm of solving max matching in bipartite is polynomial no matter
+using Hungarian Algorithm or any Network Flow algorithms, and we omit the
+detailed steps here for simplicity.
+
+\subsubsection*{\textbf{Proof of Correctness}}
+Our proof contains two parts:
+\begin{enumerate}
+\item the path set we constructed is a path cover
+\item any path cover maps uniquely to one matching in G'
+\end{enumerate}
+
+The first point is easy to prove: all points are covered, since we don't remove
+points.  Moreover, according to the definition of mathcing, any node in G' can
+have only one incident arch. Back to the original graph G, this means any node
+can have at most one in-arch and one out-arch, so any node can appear in only
+one path, or it will produce conflict. Note that G is a DAG, so our
+construction steps can never produce a circle, and this is important to the
+correctness.
+
+The second point is also straight forward: a path cover is a subset of E. Each
+of the node u have at most one in-arch and one out-arch, so it means in the
+graph G', at most one edge can incident on u, and the same works out for u'. So
+we can constructing a set of edges in G' using the path cover, and non of the
+used nodes have degree larger than 2. This is exactly the definition of a
+matching.
+
+So in conclusion, the minimum path cover can be solved using max matching, and
+it's the minimum number of boxes we could have.
+
+\end{document}
