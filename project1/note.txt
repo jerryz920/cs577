@@ -1,0 +1,99 @@
+
+1) What is an Optimal Binary Search Tree?
+
+
+2) What is the project about?   Exactly what is the open problem that is being studied?
+
+compare static search structure with dynamic structure
+
+
+3) Why has this problem been described as the most important open problem in data structures?
+search is most widely used things blablabla
+
+
+4) Why would someone prefer to use a Splay Tree (as opposed to an optimal binary search tree)?
+  1.) don't need to know pattern first
+  2.) hard to find a pattern that leads to very poor performance
+  3.) support deletion and insertion easily
+  4.) construct faster (opt needs O(n3) for textbook algorithm, and O(n2) for
+  Knuth's optimized algorithm)
+
+
+5) How did you compare the performance of these two data structures?
+  compare the level of searching and the operation of splay
+  (don't compare absolute performance since it's implementation and
+  architecture dependent)
+
+a. What was your test data and why did you choose this data?
+	three types of workload:
+		block: like 1  1 1 1 1 1 1  ... 2 2 2 2 2 2 .... n n n n n n
+		random: random shuffle of an array
+		cyclic: like 1 2 3 4 ... n 1 2 3 4 .... n 1 2 3 4 ....
+
+	workload distribution: see bottom
+
+
+b. What was your measure of complexity?
+	compare the change of input size, and search level and splay operations
+
+6) What conclusions did you draw?
+	splay tree is better
+
+7) If you continued with this project, what would you do next?
+	OPT is not practical in life use, compare with other static structures
+	like RB tree.
+	Can also compare with other search structure, like Hash Table
+
+8) If you worked as a team, what did each of the team members contribute?
+	
+
+
+
+Other stuff you need to figure out:
+ how to define the search level? Tree height, see splay.h's bin_find method
+ and opt.h's exist method for detail.
+
+ how to define splay operation? inside splay.h's splay method (a splay
+ operation can contain 1 or 2 pointer adjust, but we just add 1 to splay_cnt)
+
+ how to construct splay tree?
+ in our case, just sort the keys and insert before search. Can have other way
+ but this is simple
+
+
+
+ IMPORTANT:
+
+ how to use the program:
+ 1. define the workload distribution in workload in format:
+ p1 q1 p2 q2 ... pn-1 qn-1 pn
+ here pi and qi are float numbers, sum of all p q is 1
+ p means probability to miss, q means probability to hit
+ 2. run program:
+ 	./program <workload_type> <workload_size>
+
+	workload_type is 0 1 2 means block, random, cyclic workload for a
+	given distribution
+	workload_size is minimum 1000, for workload size. The workload
+	will contain 
+	  (int) (p1 * workload_size) number of 0
+	  (int) (q1 * workload_size) number of 1
+	  (int) (p2 * workload_size) number of 2
+	  ...
+	  (int) (qn * workload_size) number of (2*n-1)
+	  (int) (pn * workload_size) number of (2*n)
+
+	The keys contained inside OPT and Splay is 1 3 5 7 ...
+	search 0 2 4 6 8 will miss whatever.
+
+you can run several types of distribution (depend on your time)
+  for all three types generating methods above
+  1.) miss probability is smaller than hit
+  2.) miss probability is larger than hit
+  3.) random generated distribution
+
+
+3. output
+  simple, just one line, telling you:
+  	the total search level of OPT (BST)
+	the total search level and the splay level of Splay

@@ -2,19 +2,16 @@
 .PHONY: all clean
 
 CXX=g++
-LDFLAGS=-O0 -g -std=c++11
-CXXFLAGS=-Wno-write-strings -O0 -g -std=c++11
+LDFLAGS=-O0 -g 
+CXXFLAGS=-Wno-write-strings -O0 -g 
 
-all: splay opt
+all: driver
 
-splay: splay.o
-	$(CXX) $< $(LDFLAGS) -o $@ 
+driver: driver.o dist.o
+	$(CXX) $^ $(LDFLAGS) -o $@
 
-opt: opt.o
-	$(CXX) $< $(LDFLAGS) -o $@ 
-
-%.o: %.c
+%.o: %.cc
 	$(CXX) $< $(CXXFLAGS) -o $@ -c
 
 clean:
-	rm -f *.o splay opt
+	rm -f *.o driver

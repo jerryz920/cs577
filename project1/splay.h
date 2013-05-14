@@ -2,19 +2,17 @@
 
  @File Name : {PROJECT_DIR}/splay.cc
 
- @Creation Date : 08-04-2013
-
- @Created By: Zhai Yan, Liang Wang, Lei Kang
+ @Creation Date : 04-08-2013
 
  @Purpose : This is a simple implementation of a splay tree.
 
 *******************************************************************************/
 
+#pragma once
 
 #include <cstdio>
 #include <cstdlib>
 #include <utility>
-
 
 //
 //TODO:
@@ -32,18 +30,21 @@ class SplayTree {
       SplayNode* left;
       SplayNode* right;
       T val;
-    } SplayNode;
 
+      SplayNode(SplayNode* p, SplayNode* l, SplayNode* r, T v):
+        parent(p), left(l), right(r), val(v)
+      { }
+    } SplayNode;
 
   public:
 
     /*
      *  Constructors
      */
-    SplayTree()
+    SplayTree():
+      sentinel(&sentinel, &sentinel, &sentinel, T()),
+      root_(&sentinel)
     {
-      sentinel = {&sentinel, &sentinel, &sentinel, T()};
-      root_ = &sentinel;
     }
 
     void debug()
@@ -65,21 +66,19 @@ class SplayTree {
     /*
      *  Interfaces
      */
-    void insert(T&& v) {
-      insert(v);
-    }
-    void insert(T& v)
+    void insert(T v)
     {
       if (is_nil(root_)) {
-        root_ = new SplayNode {&sentinel, &sentinel, &sentinel, v};
+        root_ = new SplayNode(&sentinel, &sentinel, &sentinel, v);
+        root_->val = v;
       } else {
         do_insert(v);
       }
     }
 
-    void remove(T&& v)
+    void remove(T v)
     {
-      auto target = bin_find(v).second;
+      SplayNode* target = bin_find(v).second;
       if (is_nil(target)) {
         return ;
       }
@@ -88,27 +87,21 @@ class SplayTree {
       do_remove(target);
     }
 
-    T* find(T&& v)
+    T* find(T v, int*level = NULL, int* splay_cnt = NULL)
     {
-      return find(v);
-    }
-    T* find(T& v)
-    {
-      auto target = bin_find(v);
+      std::pair<SplayNode*,SplayNode*> target = bin_find(v, level);
       if (is_nil(target.second)) {
-        splay(target.first);
+        int tmp = splay(target.first);
+        if (splay_cnt) *splay_cnt += tmp;
         return NULL;
       } else {
-        splay(target.second);
+        int tmp = splay(target.second);
+        if (splay_cnt) *splay_cnt += tmp;
         return &target.second->val;
       }
     }
 
-    bool contains(T& v)
-    {
-      return find(v) != NULL;
-    }
-    bool contains(T&& v)
+    bool contains(T v)
     {
       return find(v) != NULL;
     }
@@ -156,9 +149,10 @@ class SplayTree {
       p->parent = x;
     }
 
-    void splay(SplayNode* x)
+    int splay(SplayNode* x)
     {
       SplayNode* p = x->parent;
+      int splay_cnt = 0;
 
       while (!is_nil(p)) {
         SplayNode* pp = p->parent;
@@ -188,14 +182,16 @@ class SplayTree {
           zag(p);
         }
         p = x->parent;
+        splay_cnt++;
       }
       //
       //  now root should point at x.
       //
       root_ = x;
+      return splay_cnt;
     }
 
-    std::pair<SplayNode*,SplayNode*> bin_find(const T& v)
+    std::pair<SplayNode*,SplayNode*> bin_find(const T& v, int* level = NULL)
     {
       sentinel.val = v;
       SplayNode* cur = root_;
@@ -209,28 +205,31 @@ class SplayTree {
         if (cur->val < v) {
           par = cur;
           cur = cur->right;
+          if (level) (*level)++;
         } else if (v < cur->val) {
           par = cur;
           cur = cur->left;
+          if (level) (*level)++;
         } else {
+          if (level) (*level)++;
           break;
         }
       }
-      return {par, cur};
+      return std::make_pair(par, cur);
     }
 
     void do_insert(const T& v)
     {
-      auto ins_point = bin_find(v);
-      auto par = std::move(ins_point.first);
-      auto ins = std::move(ins_point.second);
+      std::pair<SplayNode*,SplayNode*>  ins_point = bin_find(v);
+      SplayNode* par = ins_point.first;
+      SplayNode* ins = ins_point.second;
 
       if (is_nil(ins)) {
         if (v < par->val) {
-          par->left = new SplayNode {par, &sentinel, &sentinel, v};
+          par->left = new SplayNode(par, &sentinel, &sentinel, v);
           ins = par->left;
         } else {
-          par->right = new SplayNode {par, &sentinel, &sentinel, v};
+          par->right = new SplayNode(par, &sentinel, &sentinel, v);
           ins = par->right;
         }
       }
@@ -276,6 +275,10 @@ class SplayTree {
     {
       return n == &sentinel;
     }
+    bool is_nil(SplayNode* n)
+    {
+      return n == &sentinel;
+    }
 
     SplayNode* root_;
     SplayNode sentinel;
@@ -285,19 +288,19 @@ class SplayTree {
 //
 //  Test code
 //
-int main()
-{
-  SplayTree<int> t;
-
-  for (int i = 6; i > 0; i--)
-    t.insert(i);
-  t.insert(6);
-  t.remove(5);
-  t.remove(5);
-  t.remove(4);
-  t.remove(3);
-  t.remove(1);
-  t.debug();
-
-  return 0;
-}
+//int main()
+//{
+//  SplayTree<int> t;
+//
+//  for (int i = 6; i > 0; i--)
+//    t.insert(i);
+//  t.insert(6);
+//  t.remove(5);
+//  t.remove(5);
+//  t.remove(4);
+//  t.remove(3);
+//  t.remove(1);
+//  t.debug();
+//
+//  return 0;
+//}
